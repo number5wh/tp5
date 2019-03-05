@@ -3,23 +3,10 @@
 namespace app\index\controller;
 
 use think\Controller;
-use think\Db;
 use think\Request;
-use app\index\model\Bankinfo;
 
-class Test extends Controller
+class Start extends Controller
 {
-
-//    public function initialize()
-//    {
-//        echo 0;
-//    }
-
-//    public function __construct()
-//    {
-//        parent::__construct();
-//        echo -1;
-//    }
     /**
      * 显示资源列表
      *
@@ -28,7 +15,6 @@ class Test extends Controller
     public function index()
     {
         //
-        $this->fetch('/start/index.html');
     }
 
     /**
@@ -39,10 +25,6 @@ class Test extends Controller
     public function create()
     {
         //
-        $res = db('bankinfo')->where('id', 1)->find();
-        $res2 = Bankinfo::all()->toArray();
-        var_dump($res, $res2);die;
-
     }
 
     /**
