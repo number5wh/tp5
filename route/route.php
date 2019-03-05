@@ -14,11 +14,11 @@ Route::get('think', function () {
 });
 
 Route::get('hello', 'index/hello');
-
-Route::group('index/test', [
-    'do' => 'test/index',
-    'do2' => 'test/create'
-]);
+//
+//Route::group('index/test', [
+//    'do' => 'test/index',
+//    'do2' => 'test/create'
+//]);
 
 return [
 

@@ -12,6 +12,6 @@ class Index extends Controller
 
     public function hello()
     {
-        echo \think\facade\App::version();
+        echo 'hello';
     }
 }
