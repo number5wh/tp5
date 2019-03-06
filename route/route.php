@@ -9,16 +9,19 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-Route::get('think', function () {
-    return 'hello,ThinkPHP5!';
-});
-
+Route::get('/', 'index/layout')->name('layout');
 Route::get('hello', 'index/hello');
 //
-//Route::group('index/test', [
-//    'do' => 'test/index',
-//    'do2' => 'test/create'
-//]);
+
+Route::group('index', function(){
+    Route::get('console', 'index/console')->name('console');
+    Route::get('home1', 'index/home1')->name('home1');
+    Route::get('home2', 'index/home2')->name('home2');
+})->prefix('index/');
+
+Route::get('login/login', 'login/login')->name('loginForm');
+Route::post('login/doLogin', 'login/doLogin')->name('doLogin');
+
 
 return [
 

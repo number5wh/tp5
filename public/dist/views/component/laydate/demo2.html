@@ -1,6 +1,18 @@
 
 
-  <title>layDate 功能演示二</title>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layDate 日期组件功能演示二</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+
 
   <div class="layui-card layadmin-header">
     <div class="layui-breadcrumb" lay-filter="breadcrumb">
@@ -148,8 +160,13 @@
     </div>
   </div>
   
+  <script src="../../../layuiadmin/layui/layui.js"></script>  
   <script>
-  layui.use(['admin', 'laydate'], function(){
+  layui.config({
+    base: '../../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'laydate'], function(){
     var laydate = layui.laydate;
     
     //示例代码
@@ -165,14 +182,14 @@
       elem: '#test-laydate-mark-custom'
       ,mark: {
         '0-10-14': '生日'
-        ,'0-12-31': '跨年'
-        ,'0-0-10': '工资' 
+        ,'0-12-31': '跨年' //每年的日期
+        ,'0-0-10': '工资' //每月某天
         ,'0-0-15': '月中'
-        ,'2018-8-8': '' 
+        ,'2018-8-8': '' //如果为空字符，则默认显示数字+徽章
         ,'2099-10-14': '呵呵'
       }
       ,done: function(value, date){
-        if(date.year === 2018 && date.month === 8 && date.date === 8){
+        if(date.year === 2018 && date.month === 8 && date.date === 8){ //点击2018年8月8日，弹出提示语
           layer.msg('北京奥运会十周年，时间都去哪儿了');
         }
       }
@@ -274,3 +291,5 @@
     
   });
   </script>
+</body>
+</html>

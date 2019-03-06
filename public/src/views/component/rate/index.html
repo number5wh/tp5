@@ -1,14 +1,17 @@
 
 
-  <title>评分组件</title>
-
-  <div class="layui-card layadmin-header">
-    <div class="layui-breadcrumb" lay-filter="breadcrumb">
-      <a lay-href="">主页</a>
-      <a><cite>组件</cite></a>
-      <a><cite>评分组件</cite></a>
-    </div>
-  </div>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>评分</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
 
   <div class="layui-fluid">
     <div class="layui-row layui-col-space15">
@@ -71,8 +74,14 @@
     </div>
   </div>
 
+  
+  <script src="../../../layuiadmin/layui/layui.js"></script>  
   <script>
-  layui.use(['admin', 'rate'], function(){
+  layui.config({
+    base: '../../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'rate'], function(){
     var rate = layui.rate;
     //基础效果
     rate.render({
@@ -175,3 +184,5 @@
     })
   });
   </script>
+</body>
+</html>
