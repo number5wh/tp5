@@ -13,6 +13,8 @@ class Login extends Controller
     ];
     public function login()
     {
+        $token = $this->request->token('__token__', 'sha1');
+        $this->assign('token', $token);
         return view('login');
     }
 
@@ -25,6 +27,7 @@ class Login extends Controller
             'data' => []
         ];
         if (true !== $result) {
+
             $data['code'] = 1;
             $data['msg'] = $result;
             return json($data);
