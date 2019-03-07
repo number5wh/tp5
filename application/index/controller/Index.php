@@ -4,6 +4,7 @@ use think\facade\Config;
 use think\Controller;
 class Index extends Controller
 {
+    protected $middleware = ['Auth'];
     public function layout()
     {
 
@@ -24,5 +25,12 @@ class Index extends Controller
     public function home2()
     {
         return view('homepage2');
+    }
+
+    public function hello()
+    {
+        cache('name', 'xxww',3600);
+        
+        echo cache('name');
     }
 }

@@ -135,6 +135,12 @@ return [
 
     // 异常页面的模板文件
     'exception_tmpl'         => Env::get('think_path') . 'tpl/think_exception.tpl',
+//    'http_exception_template'    =>  [
+//        // 定义404错误的重定向页面地址
+//        404 =>  \think\facade\Env::get('app_path') . 'index/view/errors/404.html',
+//        403 =>  \think\facade\Env::get('app_path') . 'index/view/errors/403.html',
+//        500 =>  \think\facade\Env::get('app_path') . 'index/view/errors/404.html',
+//    ],
 
     // 错误显示信息,非调试模式有效
     'error_message'          => '页面错误！请稍后再试～',

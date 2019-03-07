@@ -4,6 +4,7 @@
     <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
         <form action="{:url('doLogin')}" method="post">
 
+            <input type="hidden" name="__token__" value="{$token}" />
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
                 <input type="text" name="username" value="" lay-verify="required" placeholder="用户名" class="layui-input">
@@ -18,16 +19,16 @@
                 <a href="forget.html" class="layadmin-user-jump-change layadmin-link" style="margin-top: 7px;">忘记密码？</a>
             </div>
             <div class="layui-form-item">
-                <button type="submit" class="layui-btn layui-btn-fluid" lay-submit lay-filter="">登 入</button>
+                <button type="submit" class="layui-btn layui-btn-fluid" lay-submit lay-filter="login-form">登 入</button>
             </div>
         </form>
-        <div class="layui-trans layui-form-item layadmin-user-login-other">
-            <label>社交账号登入</label>
-            <a href="javascript:;"><i class="layui-icon layui-icon-login-qq"></i></a>
-            <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>
-            <a href="javascript:;"><i class="layui-icon layui-icon-login-weibo"></i></a>
+        <!--<div class="layui-trans layui-form-item layadmin-user-login-other">-->
+            <!--<label>社交账号登入</label>-->
+            <!--<a href="javascript:;"><i class="layui-icon layui-icon-login-qq"></i></a>-->
+            <!--<a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>-->
+            <!--<a href="javascript:;"><i class="layui-icon layui-icon-login-weibo"></i></a>-->
 
-            <a href="reg.html" class="layadmin-user-jump-change layadmin-link">注册帐号</a>
-        </div>
+            <!--<a href="reg.html" class="layadmin-user-jump-change layadmin-link">注册帐号</a>-->
+        <!--</div>-->
     </div>
 {/block}

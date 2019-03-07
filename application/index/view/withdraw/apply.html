@@ -1,0 +1,62 @@
+{extend name="common/base" /}
+
+{block name="title"}分成提现{/block}
+{block name="content"}
+<div class="layui-card">
+  <div class="layui-card-header layuiadmin-card-header-auto">
+    <h2>分成提现</h2>
+  </div>
+
+  <div class="layui-card-body">
+    <form class="layui-form" action="{:url('withdraw.doApply')}" method="post">
+      <input type="hidden" name="__token__" value="{$token}" />
+      <div class="layui-form-item">
+        <label for="" class="layui-form-label">选择账号</label>
+        <div class="layui-input-inline">
+          <select name="account" lay-verify="required">
+            <option value="">1111</option>
+            <option value="0">2222</option>
+            <option value="1">3333</option>
+            <option value="2">4444</option>
+            <option value="3">5555</option>
+            <option value="4">6666</option>
+          </select>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="" class="layui-form-label">提现金额</label>
+        <div class="layui-input-inline">
+          <input type="text" name="money" value="" lay-verify="required" placeholder="请输入金额" class="layui-input" >
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="" class="layui-form-label">验证码</label>
+        <div class="layui-input-inline">
+          <input type="text" name="validecode" value="" lay-verify="required" placeholder="请输入验证码" class="layui-input" >
+        </div>
+        <div class="layui-input-inline">
+          <button type="button" class="layui-btn layui-btn-normal">获取验证码</button>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button type="submit" class="layui-btn" lay-submit="" lay-filter="withdraw-apply">确 认</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{/block}
+
+{block name="script"}
+<script>
+  layui.use(['layer','table','form'],function () {
+    var layer = layui.layer
+        ,form = layui.form
+        ,table = layui.table;
+    //用户表格初始化
+  });
+</script>
+{/block}
+
