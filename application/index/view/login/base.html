@@ -40,31 +40,36 @@
 <script>
     layui.config({
         base: '/src/layuiadmin/' //静态资源所在路径
-    }).use(['layer', 'form', 'jquery'],function () {
+    }).extend({
+        getToken:'lib/getToken'
+    }).use(['layer', 'form', 'jquery', 'getToken'],function () {
         var layer = layui.layer
             ,form = layui.form
-            ,$    = layui.$;
+            ,$    = layui.$
+            ,getToken = layui.getToken;
 
         form.on('submit(login-form)', function(data) {
             $.ajax({
                 type:'post',
                 url:data.form.action,
-                data:data.field,
+                data:{
+                    'username' : data.field.username,
+                    'password' : data.field.password,
+                    '__token__': getToken.getToken()
+                },
                 dataType:'json',
                 success: function(res) {
-                    console.log(res.msg);
                     if (res.code === 0) {
                         location.href = '/';
                     } else {
-                        layer.msg(res.msg);
+                        layer.msg(res.msg, {icon:5});
+
                     }
                 }
             });
 
             return false;
         });
-
-
     })
 </script>
 </body>

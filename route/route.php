@@ -14,6 +14,9 @@ Route::get('hello', 'index/hello');
 Route::get('login', 'login/login')->name('loginForm');
 Route::post('login/doLogin', 'login/doLogin')->name('doLogin');
 Route::get('logout', 'login/logout')->name('logout');
+Route::get('index/refreshToken', function() {
+    return Request::token();
+})->cache(false)->name('getToken');
 //
 
 Route::group('index', function(){

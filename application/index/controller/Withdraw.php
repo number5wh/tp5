@@ -50,8 +50,6 @@ class Withdraw extends Controller
     //提现申请
     public function apply()
     {
-        $token = $this->request->token('__token__', 'sha1');
-        $this->assign('token', $token);
         return view('apply');
     }
 
@@ -63,8 +61,6 @@ class Withdraw extends Controller
     //结算账号
     public function settle()
     {
-        $token = $this->request->token('__token__', 'sha1');
-        $this->assign('token', $token);
         return view('settle');
     }
 }
