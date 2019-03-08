@@ -10,19 +10,19 @@
 // +----------------------------------------------------------------------
 
 Route::get('/', 'index/layout')->name('layout');
-Route::get('hello', 'index/hello');
-Route::get('login', 'login/login')->name('loginForm');
+Route::get('login', 'login/login')->name('login');
 Route::post('login/doLogin', 'login/doLogin')->name('doLogin');
 Route::get('logout', 'login/logout')->name('logout');
-Route::get('index/refreshToken', function() {
-    return Request::token();
-})->cache(false)->name('getToken');
-//
 
+//首页
 Route::group('index', function(){
-    Route::get('console', 'index/console')->name('console');
-    Route::get('home1', 'index/home1')->name('home1');
-    Route::get('home2', 'index/home2')->name('home2');
+    Route::get('home', 'index/home')->name('home');
+    //刷新token
+    Route::get('refreshToken', function() {
+        return Request::token();
+    })->cache(false)->name('getToken');
+    Route::post('profitStatistics', 'index/profitStatistics')->name('index.profitStatistics');
+
 })->prefix('index/');
 
 //提现管理

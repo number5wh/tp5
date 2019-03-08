@@ -79,8 +79,8 @@
       <!-- 侧边菜单 -->
       <div class="layui-side layui-side-menu">
         <div class="layui-side-scroll">
-          <div class="layui-logo" lay-href="{:url('console')}">
-            <span>layuiAdmin</span>
+          <div class="layui-logo" lay-href="{:url('home')}">
+            <span>联运管理系统</span>
           </div>
           
           <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
@@ -91,13 +91,7 @@
               </a>
               <dl class="layui-nav-child">
                 <dd data-name="console" class="layui-this">
-                  <a lay-href="{:url('console')}">控制台</a>
-                </dd>
-                <dd data-name="console">
-                  <a lay-href="{:url('home1')}">主页一</a>
-                </dd>
-                <dd data-name="console">
-                  <a lay-href="{:url('home2')}">主页二</a>
+                  <a lay-href="{:url('home')}">主页</a>
                 </dd>
               </dl>
             </li>
@@ -189,7 +183,7 @@
         </div>
         <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
           <ul class="layui-tab-title" id="LAY_app_tabsheader">
-            <li lay-id="{:url('console')}" lay-attr="{:url('console')}" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+            <li lay-id="{:url('home')}" lay-attr="{:url('home')}" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
           </ul>
         </div>
       </div>
@@ -198,7 +192,7 @@
       <!-- 主体内容 -->
       <div class="layui-body" id="LAY_app_body">
         <div class="layadmin-tabsbody-item layui-show">
-          <iframe src="{:url('console')}" frameborder="0" class="layadmin-iframe"></iframe>
+          <iframe src="{:url('home')}" frameborder="0" class="layadmin-iframe"></iframe>
         </div>
       </div>
       

@@ -134,7 +134,7 @@ return [
     'dispatch_error_tmpl'    => Env::get('think_path') . 'tpl/dispatch_jump.tpl',
 
     // 异常页面的模板文件
-    'exception_tmpl'         => Env::get('think_path') . 'tpl/think_exception.tpl',
+    'exception_tmpl'         => Env::get('app_path') . 'index/view/errors/404.html',
 //    'http_exception_template'    =>  [
 //        // 定义404错误的重定向页面地址
 //        404 =>  \think\facade\Env::get('app_path') . 'index/view/errors/404.html',

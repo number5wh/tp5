@@ -4,17 +4,12 @@ namespace app\index\controller;
 
 use think\Controller;
 use think\facade\Session;
-use think\Request;
+use app\index\model\Proxy;
 
 class Login extends Controller
 {
-    protected $middleware = [
-        'Auth' => ['except' => ['login', 'doLogin', 'logout']]
-    ];
     public function login()
     {
-        $token = $this->request->token('__token__', 'sha1');
-        $this->assign('token', $token);
         return view('login');
     }
 
@@ -27,17 +22,35 @@ class Login extends Controller
             'data' => []
         ];
         if (true !== $result) {
-
             $data['code'] = 1;
             $data['msg'] = $result;
             return json($data);
         }
+        $username = trim($this->request->username);
+        $password = trim($this->request->password);
+
+        //数据验证
+        $proxyModel = new Proxy();
+        $res = $proxyModel->getInfoByUsername($username);
+        if (!$res) {
+            $data['code'] = 1;
+            $data['msg'] = config('msg.wrong_username');
+            return json($data);
+        }
+        if (md5($res['salt'].$password) != $res['password']) {
+            $data['code'] = 2;
+            $data['msg'] = config('msg.wrong_password');
+            return json($data);
+        }
+
+
 
         //验证
-        session('user', $this->request->username);
+        session('user', $res['username']);
+        session('code', $res['code']);
         $data['code'] = 0;
         $data['msg'] = '登录成功';
-        $data['data'] = $this->request->username;
+        $data['data'] = $res['username'];
         return json($data);
     }
 
