@@ -6,5 +6,5 @@
  * Time: 20:30
  */
 return [
-    'cookie_expire' => 30
+    'cookie_expire' => 7*24*3600
 ];
