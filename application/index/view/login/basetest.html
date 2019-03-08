@@ -1,0 +1,76 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>登录界面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/src/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/src/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/src/layuiadmin/style/login.css" media="all">
+</head>
+<body>
+
+<div class="layadmin-user-login layadmin-user-display-show" >
+
+    <div class="layadmin-user-login-main">
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <h2>联运管理平台</h2>
+            <p>Enterprise Data Service Solutions</p>
+        </div>
+        {block name="content"}{/block}
+    </div>
+
+    <!--<div class="layui-trans layadmin-user-login-footer">-->
+
+        <!--<p>© 2018 <a href="http://www.layui.com/" target="_blank">layui.com</a></p>-->
+        <!--<p>-->
+            <!--<span><a href="http://www.layui.com/admin/#get" target="_blank">获取授权</a></span>-->
+            <!--<span><a href="http://www.layui.com/admin/pro/" target="_blank">在线演示</a></span>-->
+            <!--<span><a href="http://www.layui.com/admin/" target="_blank">前往官网</a></span>-->
+        <!--</p>-->
+    <!--</div>-->
+</div>
+
+<script src="/src/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/src/layuiadmin/' //静态资源所在路径
+    }).extend({
+        getToken:'lib/getToken'
+    }).use(['layer', 'form', 'jquery', 'getToken'],function () {
+        var layer = layui.layer
+            ,form = layui.form
+            ,$    = layui.$
+            ,getToken = layui.getToken;
+
+        form.on('submit(login-form)', function(data) {
+            $.ajax({
+                type:'post',
+                url:data.form.action,
+                data:{
+                    'username' : data.field.username,
+                    'password' : data.field.password,
+                    '__token__': getToken.getToken()
+                },
+                dataType:'json',
+                success: function(res) {
+                    if (res.code === 0) {
+                        location.href = '/';
+                    } else {
+                        layer.msg(res.msg, {icon:5});
+
+                    }
+                }
+            });
+
+            return false;
+        });
+    })
+</script>
+</body>
+</html>
