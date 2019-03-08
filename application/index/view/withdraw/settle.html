@@ -12,6 +12,7 @@
       <legend>支付宝</legend>
     </fieldset>
     <form class="layui-form" action="{:url('withdraw.doSettle')}" method="post">
+      <input type="hidden" name="__token__" value="{$token}" id="dosettletoken1"/>
       <input type="hidden" name="type" value="1" />
       <div class="layui-form-item">
 
@@ -46,6 +47,7 @@
     </fieldset>
 
     <form class="layui-form" action="{:url('withdraw.doSettle')}" method="post">
+      <input type="hidden" name="__token__" value="{$token}" id="dosettletoken2"/>
       <input type="hidden" name="type" value="2" />
       <div class="layui-form-item">
 
