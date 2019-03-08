@@ -14,8 +14,12 @@ class Proxy extends Model
 
     public function getInfoByUsername($username, $field = '*')
     {
-
         $user = Db::table($this->table)->where('username', $username)->field($field)->find();
+        return $user;
+    }
+    public function getInfoByIndentifier($identifier, $field = '*')
+    {
+        $user = Db::table($this->table)->where('identifier', $identifier)->field($field)->find();
         return $user;
     }
 

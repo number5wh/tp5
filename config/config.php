@@ -1,11 +1,10 @@
 <?php
 /**
- * 配置
- * User: Administrator
+ * 常规配置
+ * User: wuhao
  * Date: 2019/3/8
- * Time: 17:27
+ * Time: 20:30
  */
 return [
-    'appkey'     => 'wxcdefv19677581334',
-    "ServiceUrl" => "http://service.gamewuzhou.com:20108",
+    'cookie_expire' => 30
 ];
