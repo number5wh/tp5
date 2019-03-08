@@ -1,10 +1,10 @@
 {extend name="common/base" /}
 
-{block name="title"}分成提现{/block}
+{block name="title"}结算账号{/block}
 {block name="content"}
 <div class="layui-card">
   <div class="layui-card-header layuiadmin-card-header-auto">
-    <h2>分成提现</h2>
+    <h2>结算账号</h2>
   </div>
 
   <div class="layui-card-body">
@@ -12,33 +12,31 @@
       <legend>支付宝</legend>
     </fieldset>
     <form class="layui-form" action="{:url('withdraw.doSettle')}" method="post">
-      <input type="hidden" name="__token__" value="{$token}" id="dosettletoken1"/>
+      {:token()}
       <input type="hidden" name="type" value="1" />
       <div class="layui-form-item">
 
         <div class="layui-inline">
           <label class="layui-form-label">姓名：</label>
-          <div class="layui-input-inline" style="width: 150px;">
+          <div class="layui-input-inline">
             <input type="text" name="name" placeholder="请输入姓名" autocomplete="off" class="layui-input">
           </div>
         </div>
 
         <div class="layui-inline">
           <label class="layui-form-label">账号：</label>
-          <div class="layui-input-inline" style="width: 150px;">
+          <div class="layui-input-inline">
             <input type="text" name="account" placeholder="请输入账号" autocomplete="off" class="layui-input">
           </div>
         </div>
-
-        <div class="layui-inline">
-          <label class="layui-form-label"></label>
-          <div class="layui-input-inline" style="width: 150px;">
-            <button type="submit" class="layui-btn" lay-submit="" lay-filter="withdraw-apply">保存</button>
-          </div>
-        </div>
-
-
       </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+          <button type="submit" class="layui-btn" lay-submit="" lay-filter="withdraw-apply">新增/修改</button>
+        </div>
+      </div>
+
     </form>
 
 
@@ -47,36 +45,35 @@
     </fieldset>
 
     <form class="layui-form" action="{:url('withdraw.doSettle')}" method="post">
-      <input type="hidden" name="__token__" value="{$token}" id="dosettletoken2"/>
+      {:token()}
       <input type="hidden" name="type" value="2" />
       <div class="layui-form-item">
 
         <div class="layui-inline">
           <label class="layui-form-label">姓名：</label>
-          <div class="layui-input-inline" style="width: 150px;">
+          <div class="layui-input-inline">
             <input type="text" name="name" placeholder="请输入姓名" autocomplete="off" class="layui-input">
           </div>
         </div>
 
         <div class="layui-inline">
           <label class="layui-form-label">账号：</label>
-          <div class="layui-input-inline" style="width: 150px;">
+          <div class="layui-input-inline">
             <input type="text" name="account" placeholder="请输入账号" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-inline">
           <label class="layui-form-label">开户行：</label>
-          <div class="layui-input-inline" style="width: 150px;">
+          <div class="layui-input-inline" >
             <input type="text" name="bank" placeholder="请输入开户行" autocomplete="off" class="layui-input">
           </div>
         </div>
-        <div class="layui-inline">
-          <label class="layui-form-label"></label>
-          <div class="layui-input-inline" style="width: 150px;">
-            <button type="submit" class="layui-btn" lay-submit="" lay-filter="withdraw-apply">保存</button>
-          </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+          <button type="submit" class="layui-btn" lay-submit="" lay-filter="withdraw-apply">新增/修改</button>
         </div>
-
       </div>
     </form>
   </div>

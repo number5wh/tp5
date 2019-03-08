@@ -2,8 +2,8 @@
 
 {block name="content"}
     <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
-        <form action="{:url('doLogin')}" method="post">
-            <input type="hidden" name="__token__" value="{$token}" id="logintoken"/>
+        <form action="{:url('doLogin')}" method="post" id="loginForm">
+            {:token()}
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
                 <input type="text" name="username" value="" lay-verify="required" placeholder="用户名" class="layui-input">

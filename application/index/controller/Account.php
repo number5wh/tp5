@@ -94,6 +94,10 @@ class Account extends Controller
     {
 
     }
-    
-    
+
+    public function addAgent()
+    {
+        return view('addAgent');
+    }
+
 }

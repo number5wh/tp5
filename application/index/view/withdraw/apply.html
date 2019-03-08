@@ -9,7 +9,7 @@
 
   <div class="layui-card-body">
     <form class="layui-form" action="{:url('withdraw.doApply')}" method="post">
-      <input type="hidden" name="__token__" value="{$token}" />
+      {:token()}
       <div class="layui-form-item">
         <label for="" class="layui-form-label">选择账号</label>
         <div class="layui-input-inline">

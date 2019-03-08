@@ -64,7 +64,7 @@
                     } else {
                         layer.msg(res.msg, {icon:5});
                         var token = getToken.getToken();
-                        $('#logintoken').val(token);
+                        $("input[name='__token__']").val(token);
                     }
                 }
             });
