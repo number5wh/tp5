@@ -8,34 +8,38 @@
   </div>
 
   <div class="layui-card-body">
+    <div style="padding-bottom: 20px;">
+      <h3>余额：<span id="leftmoney">{$balance}</span></h3>
+    </div>
     <form class="layui-form" action="{:url('withdraw.doApply')}" method="post">
-      {:token()}
       <div class="layui-form-item">
-        <label for="" class="layui-form-label">选择账号</label>
-        <div class="layui-input-inline">
-          <select name="account" lay-verify="required">
-            <option value="">1111</option>
-            <option value="0">2222</option>
-            <option value="1">3333</option>
-            <option value="2">4444</option>
-            <option value="3">5555</option>
-            <option value="4">6666</option>
+        <label for="" class="layui-form-label">账户类型</label>
+        <div class="layui-input-block">
+          <select name="checktype" lay-filter="withdraw_select">
+            <option value="1" selected>支付宝</option>
+            <option value="2">银行卡</option>
           </select>
         </div>
       </div>
       <div class="layui-form-item">
+        <label for="" class="layui-form-label">账号</label>
+        <div class="layui-input-block">
+          <input type="text" name="account" id="drawaccount" value="{$info['alipay']}" lay-verify="required" placeholder="" class="layui-input" disabled>
+        </div>
+      </div>
+      <div class="layui-form-item">
         <label for="" class="layui-form-label">提现金额</label>
-        <div class="layui-input-inline">
-          <input type="text" name="money" value="" lay-verify="required" placeholder="请输入金额" class="layui-input" >
+        <div class="layui-input-block">
+          <input type="text" name="amount" id="getmoney" value="" lay-verify="required|number" placeholder="请输入金额，可提现金额为{$balance}" class="layui-input" >
         </div>
       </div>
       <div class="layui-form-item">
         <label for="" class="layui-form-label">验证码</label>
         <div class="layui-input-inline">
-          <input type="text" name="validecode" value="" lay-verify="required" placeholder="请输入验证码" class="layui-input" >
+          <input type="text" name="code" id="getcode" value="" lay-verify="required|number" placeholder="请输入验证码" class="layui-input" >
         </div>
         <div class="layui-input-inline">
-          <button type="button" class="layui-btn layui-btn-normal">获取验证码</button>
+          <button type="button" class="layui-btn layui-btn-normal" id="sms">获取验证码</button>
         </div>
       </div>
       <div class="layui-form-item">
@@ -51,11 +55,79 @@
 
 {block name="script"}
 <script>
-  layui.use(['layer','table','form'],function () {
+  layui.extend({
+    sendmsg:'../src/layuiadmin/mymod/sendmsg'
+  }).use(['layer','table','form','jquery','sendmsg'],function () {
     var layer = layui.layer
         ,form = layui.form
-        ,table = layui.table;
-    //用户表格初始化
+        ,table = layui.table
+            ,$ = layui.$
+            ,sendmsg = layui.sendmsg;
+
+    //选择账号类型
+    form.on('select(withdraw_select)', function(data){
+      if (data.value == 1) {
+        //支付宝
+        var account = "{$info['alipay']}";
+      } else {
+        //银行卡
+        var account = "{$info['cardaccount']}";
+      }
+      if (!account) {
+        $('#drawaccount').val("").attr('placeholder', '暂未绑定账号');
+      } else {
+        $('#drawaccount').val(account).attr('placeholder', '');
+      }
+    });
+
+    //提现申请
+    form.on('submit(withdraw-apply)', function(data) {
+      var amount = parseFloat(data.field.amount);
+      if (isNaN(amount)) {
+        layer.msg('金额必须填数字', {icon:5});
+        return false;
+      }
+      if (amount<0) {
+        layer.msg('金额必须大于0', {icon:5});
+        return false;
+      }
+      var code = data.field.code;
+      var checktype = data.field.checktype;
+      if (checktype != 1 && checktype !=2) {
+        layer.msg('账号类型有误', {icon:5});
+        return false;
+      }
+      var account = data.field.account;
+      if (!account) {
+        layer.msg('请先绑定账号', {icon:5});
+        return false;
+      }
+
+      $.ajax({
+        type: 'post',
+        url: data.form.action,
+        data: {
+          'checktype':checktype,
+          'code':code,
+          'amount':amount
+        },
+        dataType: 'json',
+        success: function (res) {
+          $('#getmoney').val('');
+          $('#getcode').val('');
+          if (res.code === 0) {
+            layer.msg(res.msg, {icon: 6});
+          } else {
+            layer.msg(res.msg, {icon: 5});
+          }
+        }
+      });
+      return false;
+    });
+
+    $('#sms').on('click', function(){
+      sendmsg.sendmsg('#sms',1,'');
+    });
   });
 </script>
 {/block}

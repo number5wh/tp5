@@ -29,10 +29,12 @@ Route::group('index', function(){
 Route::group('withdraw', function(){
     Route::get('getList', 'withdraw/getList')->name('withdraw.list');
     Route::get('getListData', 'withdraw/getListData')->name('withdraw.listData');
+    Route::get('getAmount', 'withdraw/getAmount')->name('withdraw.getAmount');
     Route::get('apply', 'withdraw/apply')->name('withdraw.apply');
-    Route::get('doApply', 'withdraw/doApply')->name('withdraw.doApply');
-    Route::get('settle', 'withdraw/settle')->name('withdraw.settle');
-    Route::get('doSettle', 'withdraw/doSettle')->name('withdraw.doSettle');
+    Route::post('doApply', 'withdraw/doApply')->name('withdraw.doApply');
+    Route::get('set', 'withdraw/set')->name('withdraw.set');
+    Route::post('doSetAlipay', 'withdraw/doSetAlipay')->name('withdraw.doSetAlipay');
+    Route::post('doSetBank', 'withdraw/doSetBank')->name('withdraw.doSetBank');
 })->prefix('index/');
 
 //用户信息
@@ -56,6 +58,8 @@ Route::group('account', function(){
 //安全设置
 Route::group('safeset', function(){
     Route::get('index', 'safeset/index')->name('safeset.index');
+    Route::post('changePwd', 'safeset/changePwd')->name('safeset.changePwd');
+    Route::post('changeMobile', 'safeset/changeMobile')->name('safeset.changeMobile');
 })->prefix('index/');
 
 //明细查询
@@ -63,6 +67,15 @@ Route::group('detail', function(){
     Route::get('index', 'detail/index')->name('detail.index');
     Route::get('getData', 'detail/getData')->name('detail.getData');
 })->prefix('index/');
+//发送短信
+Route::group('sendmsg', function(){
+    Route::post('index', 'sendmsg/index')->name('sendmsg.index');
+    Route::post('index2', 'sendmsg/index2')->name('sendmsg.index2');
+})->prefix('index/');
+
+Route::group('test', function(){
+    Route::get('index', 'test/index')->name('test.index');
+});
 
 
 return [

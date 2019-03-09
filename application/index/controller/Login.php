@@ -2,6 +2,7 @@
 
 namespace app\index\controller;
 
+use sms\Sms;
 use think\Controller;
 use think\facade\Session;
 use app\index\model\Proxy;
@@ -56,6 +57,7 @@ class Login extends Controller
         //存入session
         session('username', $res['username']);
         session('id', $res['id']);
+        session('code', $res['code']);
 
 
         //盐
@@ -81,6 +83,7 @@ class Login extends Controller
         );
 
         cookie('username',$res['username'],$expire);
+        save_log('login/signin', "username:{$res['username']} signin");
 
         $data['code'] = 0;
         $data['msg'] = '登录成功';
@@ -104,6 +107,7 @@ class Login extends Controller
         }else{
             session("username",$isLong['username']);
             session("id",$isLong['id']);
+            session('code', $isLong['code']);
         }
     }
 
@@ -111,7 +115,6 @@ class Login extends Controller
     public function checkRemember(){
         $arr = array();
         $now = time();
-
         $auth = cookie('auth');
         if (!$auth) {
             return false;
@@ -126,7 +129,7 @@ class Login extends Controller
         }
 
         $proxyModel = new Proxy();
-        $info = $proxyModel->getInfoByIndentifier($arr['identifier']);
+        $info = $proxyModel->getInfoByIdentifier($arr['identifier']);
         if($info != null){
             if($arr['token'] != $info['token']){
                 return false;

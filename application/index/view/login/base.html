@@ -43,9 +43,9 @@
                 type:'post',
                 url:data.form.action,
                 data:{
-                    'username' : data.field.username,
-                    'password' : data.field.password,
-                    '__token__': data.field.__token__
+                    'username' : $.trim(data.field.username),
+                    'password' : $.trim(data.field.password),
+                    '__token__': $.trim(data.field.__token__)
                 },
                 dataType:'json',
                 success: function(res) {

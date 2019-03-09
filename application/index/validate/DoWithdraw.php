@@ -4,7 +4,7 @@ namespace app\index\validate;
 
 use think\Validate;
 
-class Login extends Validate
+class DoWithdraw extends Validate
 {
     /**
      * 定义验证规则
@@ -13,9 +13,9 @@ class Login extends Validate
      * @var array
      */	
 	protected $rule = [
-	    '__token__' => 'token|require',
-        'username|登录名'  => 'require|max:50',
-        'password|密码'   => 'require|min:6'
+	    'checktype|账号类型' => 'require|in:1,2',
+        'amount|提现金额'   => 'require|float|gt:0',
+        'code|验证码' => 'require|regex:\d{4}'
     ];
     
     /**
@@ -24,5 +24,7 @@ class Login extends Validate
      *
      * @var array
      */	
-    protected $message = [];
+    protected $message = [
+        'code.regex' => '请输入4位验证码数字'
+    ];
 }

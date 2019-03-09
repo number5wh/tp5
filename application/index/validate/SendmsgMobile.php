@@ -4,7 +4,7 @@ namespace app\index\validate;
 
 use think\Validate;
 
-class Login extends Validate
+class SendmsgMobile extends Validate
 {
     /**
      * 定义验证规则
@@ -13,9 +13,7 @@ class Login extends Validate
      * @var array
      */	
 	protected $rule = [
-	    '__token__' => 'token|require',
-        'username|登录名'  => 'require|max:50',
-        'password|密码'   => 'require|min:6'
+	    'mobile|手机' => 'require|mobile'
     ];
     
     /**
