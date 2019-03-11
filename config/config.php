@@ -7,6 +7,7 @@
  */
 return [
     'cookie_expire' => 7*24*3600,
+    //log文件地址
     'log_dir'       => Env::get('root_path') . 'log',
     //提现状态
     'checklog_status' => [
@@ -27,5 +28,7 @@ return [
     'check_type' => [
         1 => '支付宝',
         2 => '银行卡'
-    ]
+    ],
+    //短信超时时间
+    'sms_expire' => 60,
 ];

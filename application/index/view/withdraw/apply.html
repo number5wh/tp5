@@ -24,13 +24,13 @@
       <div class="layui-form-item">
         <label for="" class="layui-form-label">账号</label>
         <div class="layui-input-block">
-          <input type="text" name="account" id="drawaccount" value="{$info['alipay']}" lay-verify="required" placeholder="" class="layui-input" disabled>
+          <input type="text" name="account" id="drawaccount" value="{$info['alipay']}" lay-verify="required" placeholder="暂未绑定账号" class="layui-input" disabled>
         </div>
       </div>
       <div class="layui-form-item">
         <label for="" class="layui-form-label">提现金额</label>
         <div class="layui-input-block">
-          <input type="text" name="amount" id="getmoney" value="" lay-verify="required|number" placeholder="请输入金额，可提现金额为{$balance}" class="layui-input" >
+          <input type="text" name="amount" id="getmoney" value="" lay-verify="amount" placeholder="请输入金额，可提现金额为{$balance}" class="layui-input" >
         </div>
       </div>
       <div class="layui-form-item">
@@ -64,7 +64,18 @@
             ,$ = layui.$
             ,sendmsg = layui.sendmsg;
 
-    //选择账号类型
+    form.verify({
+      amount: function(value, item){ //value：表单的值、item：表单的DOM对象
+        var left = $('#leftmoney').html();
+        if (isNaN(value)) {
+          return '金额必须为数字';
+        }
+        if(parseFloat(left) < parseFloat(value)){
+          return '您当前可提现余额为'+parseFloat(left)+'元';
+        }
+      }
+    });
+
     form.on('select(withdraw_select)', function(data){
       if (data.value == 1) {
         //支付宝

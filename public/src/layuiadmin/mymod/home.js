@@ -64,7 +64,7 @@ layui.define(function(exports){
                         //今日流量趋势
                         {
                             title: {
-                                text: '今日流量趋势',
+                                text: '前7日利润统计',
                                 x: 'center',
                                 textStyle: {
                                     fontSize: 14

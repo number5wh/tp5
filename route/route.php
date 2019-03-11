@@ -47,12 +47,12 @@ Route::group('user', function(){
 Route::group('account', function(){
     Route::get('playerList', 'account/playerList')->name('account.playerList');
     Route::get('playerListData', 'account/playerListData')->name('account.playerListData');
-    Route::get('searchPlayer', 'account/searchPlayer')->name('account.searchPlayer');
+    Route::post('searchPlayer', 'account/searchPlayer')->name('account.searchPlayer');
     Route::get('agentList', 'account/agentList')->name('account.agentList');
     Route::get('agentListData', 'account/agentListData')->name('account.agentListData');
-    Route::get('searchAgent', 'account/searchAgent')->name('account.searchAgent');
+    Route::post('searchAgent', 'account/searchAgent')->name('account.searchAgent');
     Route::get('addAgent', 'account/addAgent')->name('account.addAgent');
-    Route::get('doAddAgent', 'account/doAddAgent')->name('account.doAddAgent');
+    Route::post('doAddAgent', 'account/doAddAgent')->name('account.doAddAgent');
 })->prefix('index/');
 
 //安全设置

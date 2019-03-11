@@ -5,12 +5,15 @@
  * Date: 2019/3/7
  * Time: 11:51
  */
+
 namespace app\index\controller;
+
 use app\index\model\Proxy;
 use sms\Sms;
 use think\Controller;
 use app\index\model\Bankinfo;
 use app\index\model\Checklog;
+
 class Withdraw extends Controller
 {
     protected $middleware = ['Auth'];
@@ -35,13 +38,13 @@ class Withdraw extends Controller
         $statusArr     = config('config.checklog_status');
         $checklogModel = new Checklog();
         //获取总数
-        $count = $checklogModel->getCountByProxyId(session('code'));
+        $count         = $checklogModel->getCount(['proxy_id' => session('code')]);
         $data['count'] = $count;
         if ($count == 0) {
             return json($data);
         }
         //获取记录
-        $res = $checklogModel->getByProxyId(session('code'), $page, $limit);
+        $res = $checklogModel->getList(['proxy_id' => session('code')], $page, $limit);
         //checktype 1 支付宝  2 银行卡
         foreach ($res as &$v) {
             $v['statusInf']     = in_array($v['status'], $statusArr) ? $statusArr[$v['status']] : config('config.checklog_status_other');
@@ -58,7 +61,7 @@ class Withdraw extends Controller
     public function getAmount()
     {
         $checklogModel = new Checklog();
-        $amount        = $checklogModel->getAmountByProxyId(session('code'));
+        $amount        = $checklogModel->getRow(['proxy_id' => session('code')], 'sum(amount) amount');
         $data          = [
             'code'   => 0,
             'amount' => $amount['amount']
@@ -70,10 +73,10 @@ class Withdraw extends Controller
     public function apply()
     {
         $bankInfoModel = new Bankinfo();
-        $info = $bankInfoModel->getByProxyId(session('code'));
+        $info          = $bankInfoModel->getRow(['proxy_id' => session('code')]);
         //获取可提现金额
         $proxyModel = new Proxy();
-        $user = $proxyModel->getInfoById(session('id'), 'balance');
+        $user       = $proxyModel->getRow(['id' => session('id')], 'balance');
         $this->assign('info', $info);
         $this->assign('balance', $user['balance']);
         return view('apply');
@@ -83,13 +86,13 @@ class Withdraw extends Controller
     public function doApply()
     {
         $result = $this->validate($this->request->post(), 'app\index\validate\DoWithdraw');
-        $data = [
+        $data   = [
             'code' => 0,
             'msg'  => config('msg.withdraw_0')
         ];
         if (true !== $result) {
             $data['code'] = 1;
-            $data['msg'] = $result;
+            $data['msg']  = $result;
             return json($data);
         }
         $checktype = $this->request->checktype;
@@ -99,72 +102,72 @@ class Withdraw extends Controller
 
         //获取用户信息
         $proxyModel = new Proxy();
-        $userInfo = $proxyModel->getInfoById(session('id'));
+        $userInfo   = $proxyModel->getRow(['id' => session('id')]);
         //绑定手机判断
         if (!$userInfo['bind_mobile']) {
             $data['code'] = 2;
-            $data['msg'] = config('msg.bind_mobile');
+            $data['msg']  = config('msg.bind_mobile');
             return json($data);
         }
         //验证码验证
         $check = Sms::validateSms($userInfo['bind_mobile'], $code);
         if ($check->code != 0) {
             $data['code'] = 3;
-            $data['msg'] = config('msg.wrong_code');
+            $data['msg']  = config('msg.wrong_code');
             return json($data);
         }
 
         //判断提现账户是否存在
         $bankInfoModel = new Bankinfo();
-        $info = $bankInfoModel->getByProxyId(session('code'));
-        $account = '';
-        $account = $checktype == 1 ? $info['alipay'] : $info['cardaccount'];
+        $info          = $bankInfoModel->getRow(['proxy_id' => session('code')]);
+        $account       = '';
+        $account       = $checktype == 1 ? $info['alipay'] : $info['cardaccount'];
         if (!$account) {
             $data['code'] = 4;
-            $data['msg'] = config('msg.no_account');
+            $data['msg']  = config('msg.no_account');
             return json($data);
         }
 
         //判断剩余金额
         if ($userInfo['balance'] < $amount) {
             $data['code'] = 5;
-            $data['msg'] = config('msg.enough_money');
+            $data['msg']  = config('msg.enough_money');
             return json($data);
         }
 
         //开始处理提现申请
         //先扣除总额
         $leftMoney = $userInfo['balance'] - $amount;
-        $res = $proxyModel->updateById(
+        $res       = $proxyModel->updateById(
             session('id'),
             ['balance' => $leftMoney]
         );
         if (!$res) {
             $data['code'] = 6;
-            $data['msg'] = config('msg.withdraw_1');
+            $data['msg']  = config('msg.withdraw_1');
             save_log('withdraw/apply', "status:0,returncode:1,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account}");
             return json($data);
         }
         //再添加到提现表
         $checklogModel = new Checklog();
-        $orderid = random_orderid();
-        $addData =         [
-            'orderid' => $orderid,
-            'proxy_id' => session('code'),
-            'amount' => $amount,//提现金额
-            'balance' => $leftMoney,//剩余金额
-            'checktype' => $checktype,
-            'descript' => $userInfo['nickname'].','.$userInfo['code'].'于'.date('Y-m-d H:i:s').'提现金额'.$amount.'元',
-            'status' => 0,
+        $orderid       = random_orderid();
+        $addData       = [
+            'orderid'    => $orderid,
+            'proxy_id'   => session('code'),
+            'amount'     => $amount,//提现金额
+            'balance'    => $leftMoney,//剩余金额
+            'checktype'  => $checktype,
+            'descript'   => $userInfo['nickname'] . ',' . $userInfo['code'] . '于' . date('Y-m-d H:i:s') . '提现金额' . $amount . '元',
+            'status'     => 0,
             'createtime' => time(),
-            'addtime' => date('Y-m-d H:i:s')
+            'addtime'    => date('Y-m-d H:i:s')
         ];
         if ($checktype == 1) {
-            $addData['alipay'] = $info['alipay'];
+            $addData['alipay']      = $info['alipay'];
             $addData['alipay_name'] = $info['alipay_name'];
         } else {
-            $addData['name'] = $info['name'];
-            $addData['bank'] = $info['bank'];
+            $addData['name']        = $info['name'];
+            $addData['bank']        = $info['bank'];
             $addData['cardaccount'] = $info['cardaccount'];
         }
         $res2 = $checklogModel->add($addData);
@@ -175,7 +178,7 @@ class Withdraw extends Controller
                 ['balance' => $userInfo['balance']]
             );
             $data['code'] = 7;
-            $data['msg'] = config('msg.withdraw_1');
+            $data['msg']  = config('msg.withdraw_1');
             save_log('withdraw/apply', "status:0,returncode:2,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account}");
             return json($data);
         }
@@ -183,12 +186,12 @@ class Withdraw extends Controller
         save_log('withdraw/apply', "status:1,returncode:0,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account}");
         return json($data);
     }
-    
+
     //结算账号
     public function set()
     {
         $bankInfoModel = new Bankinfo();
-        $info = $bankInfoModel->getByProxyId(session('code'));
+        $info          = $bankInfoModel->getRow(['proxy_id' => session('code')]);
         $this->assign('info', $info);
         return view('set');
     }
@@ -197,75 +200,75 @@ class Withdraw extends Controller
     public function doSetAlipay()
     {
         $result = $this->validate($this->request->post(), 'app\index\validate\ChangeAlipay');
-        $data = [
+        $data   = [
             'code' => 0,
             'msg'  => config('msg.update_success')
         ];
         if (true !== $result) {
             $data['code'] = 1;
-            $data['msg'] = $result;
+            $data['msg']  = $result;
             return json($data);
         }
-        $alipay = $this->request->alipay;
+        $alipay     = $this->request->alipay;
         $alipayName = $this->request->alipay_name;
 
         $bankInfoModel = new Bankinfo();
-        $info = $bankInfoModel->getByProxyId(session('code'));
+        $info          = $bankInfoModel->getRow(['proxy_id' => session('code')]);
         //判断是否有改动
         if ($info && $info['alipay'] == $alipay && $info['alipay_name'] == $alipayName) {
             $data['code'] = 2;
-            $data['msg'] = config('msg.nochange');
+            $data['msg']  = config('msg.nochange');
             return json($data);
         }
 
         if (!$info) {
-            $res = $bankInfoModel->add(['proxy_id' => session('code'), 'alipay'   => $alipay, 'alipay_name' => $alipayName]);
+            $res = $bankInfoModel->add(['proxy_id' => session('code'), 'alipay' => $alipay, 'alipay_name' => $alipayName]);
         } else {
-            $res = $bankInfoModel->updateByProxyId(session('code'),['alipay'   => $alipay, 'alipay_name' => $alipayName]);
+            $res = $bankInfoModel->updateByWhere(['proxy_id' => session('code')], ['alipay' => $alipay, 'alipay_name' => $alipayName]);
         }
 
         if (!$res) {
             $data['code'] = 3;
-            $data['msg'] = config('msg.update_fail');
+            $data['msg']  = config('msg.update_fail');
         }
         return json($data);
     }
-    
+
     //修改新增银行账号
     public function doSetBank()
     {
         $result = $this->validate($this->request->post(), 'app\index\validate\ChangeBank');
-        $data = [
+        $data   = [
             'code' => 0,
             'msg'  => config('msg.update_success')
         ];
         if (true !== $result) {
             $data['code'] = 1;
-            $data['msg'] = $result;
+            $data['msg']  = $result;
             return json($data);
         }
-        $name = $this->request->name;
-        $bank = $this->request->bank;
+        $name        = $this->request->name;
+        $bank        = $this->request->bank;
         $cardaccount = $this->request->cardaccount;
 
         $bankInfoModel = new Bankinfo();
-        $info = $bankInfoModel->getByProxyId(session('code'));
+        $info          = $bankInfoModel->getRow(['proxy_id' => session('code')]);
         //判断是否有改动
         if ($info && $info['name'] == $name && $info['bank'] == $bank && $info['cardaccount'] == $cardaccount) {
             $data['code'] = 2;
-            $data['msg'] = config('msg.nochange');
+            $data['msg']  = config('msg.nochange');
             return json($data);
         }
 
         if (!$info) {
             $res = $bankInfoModel->add(['proxy_id' => session('code'), 'name' => $name, 'bank' => $bank, 'cardaccount' => $cardaccount]);
         } else {
-            $res = $bankInfoModel->updateByProxyId(session('code'), ['name' => $name, 'bank' => $bank, 'cardaccount' => $cardaccount]);
+            $res = $bankInfoModel->updateByWhere(['proxy_id' => session('code')], ['name' => $name, 'bank' => $bank, 'cardaccount' => $cardaccount]);
         }
 
         if (!$res) {
             $data['code'] = 3;
-            $data['msg'] = config('msg.update_fail');
+            $data['msg']  = config('msg.update_fail');
         }
         return json($data);
     }

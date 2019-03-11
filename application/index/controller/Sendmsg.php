@@ -15,7 +15,7 @@ class Sendmsg extends Controller
     {
         $data = ['code' => 0, 'msg' => ''];
         $proxyModel = new Proxy();
-        $userInfo = $proxyModel->getInfoById(session('id'), 'bind_mobile');
+        $userInfo = $proxyModel->getRowById(session('id'), 'bind_mobile');
         if (!$userInfo['bind_mobile']) {
             $data['code'] = 1;
             $data['msg'] = config('msg.bind_mobile');

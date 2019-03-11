@@ -42,7 +42,7 @@ class Login extends Controller
 
         //数据验证
         $proxyModel = new Proxy();
-        $res = $proxyModel->getInfoByUsername($username);
+        $res = $proxyModel->getRow(['username' => $username]);
         if (!$res) {
             $data['code'] = 1;
             $data['msg'] = config('msg.wrong_username');
@@ -71,8 +71,8 @@ class Login extends Controller
         $timeout = time()+$expire;
         //存入cookie
         cookie('auth',"$identifier:$token",$expire);
-        $proxyModel->updateByWhere(
-            ['id' => $res['id']],
+        $proxyModel->updateById(
+            $res['id'],
             [
                 'last_login' => date('Y-m-d H:i:s'),
                 'last_ip' => get_client_ip(),
@@ -129,7 +129,7 @@ class Login extends Controller
         }
 
         $proxyModel = new Proxy();
-        $info = $proxyModel->getInfoByIdentifier($arr['identifier']);
+        $info = $proxyModel->getRow(['identifier' => $arr['identifier']]);
         if($info != null){
             if($arr['token'] != $info['token']){
                 return false;
