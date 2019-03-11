@@ -96,7 +96,7 @@ class Withdraw extends Controller
             return json($data);
         }
         $checktype = $this->request->checktype;
-        $amount    = floatval($this->request->amount);
+        $amount    = round($this->request->amount, 2);
         $code      = $this->request->code;
 
 

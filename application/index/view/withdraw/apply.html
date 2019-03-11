@@ -93,7 +93,7 @@
 
     //提现申请
     form.on('submit(withdraw-apply)', function(data) {
-      var amount = parseFloat(data.field.amount);
+      var amount = parseFloat(data.field.amount).toFixed(2);
       if (isNaN(amount)) {
         layer.msg('金额必须填数字', {icon:5});
         return false;
@@ -127,6 +127,9 @@
           $('#getmoney').val('');
           $('#getcode').val('');
           if (res.code === 0) {
+            var left = (parseFloat($('#leftmoney').html()).toFixed(2) - amount).toFixed(2);
+            $('#leftmoney').html(left);
+            
             layer.msg(res.msg, {icon: 6});
           } else {
             layer.msg(res.msg, {icon: 5});
