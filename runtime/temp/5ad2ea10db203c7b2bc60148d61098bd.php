@@ -1,3 +1,4 @@
+<?php /*a:1:{s:69:"C:\Users\Administrator\Desktop\tp5\application\index\view\layout.html";i:1552355101;}*/ ?>
 
 
 <!DOCTYPE html>
@@ -38,7 +39,7 @@
               <dd><a lay-href="set/user/info.html">基本资料</a></dd>
               <dd><a lay-href="set/user/password.html">修改密码</a></dd>
               <hr>
-              <dd style="text-align: center;"><a href="{:url('logout')}">退出</a></dd>
+              <dd style="text-align: center;"><a href="<?php echo url('logout'); ?>">退出</a></dd>
             </dl>
           </li>
           <li class="layui-nav-item" lay-unselect>
@@ -66,7 +67,7 @@
       <!-- 侧边菜单 -->
       <div class="layui-side layui-side-menu">
         <div class="layui-side-scroll">
-          <div class="layui-logo" lay-href="{:url('home')}">
+          <div class="layui-logo" lay-href="<?php echo url('home'); ?>">
             <span>联运管理系统</span>
           </div>
           
@@ -78,7 +79,7 @@
               </a>
               <dl class="layui-nav-child">
                 <dd data-name="console" class="layui-this">
-                  <a lay-href="{:url('home')}">主页</a>
+                  <a lay-href="<?php echo url('home'); ?>">主页</a>
                 </dd>
               </dl>
             </li>
@@ -89,13 +90,13 @@
               </a>
               <dl class="layui-nav-child">
                 <dd data-name="withdraw-list">
-                  <a lay-href="{:url('withdraw.list')}">提现记录</a>
+                  <a lay-href="<?php echo url('withdraw.list'); ?>">提现记录</a>
                 </dd>
                 <dd data-name="withdraw-account">
-                  <a lay-href="{:url('withdraw.set')}">结算账号</a>
+                  <a lay-href="<?php echo url('withdraw.set'); ?>">结算账号</a>
                 </dd>
                 <dd data-name="withdraw-get">
-                  <a lay-href="{:url('withdraw.apply')}">提现申请</a>
+                  <a lay-href="<?php echo url('withdraw.apply'); ?>">提现申请</a>
                 </dd>
               </dl>
             </li>
@@ -105,7 +106,7 @@
                 <cite>明细查询</cite>
               </a>
               <dl class="layui-nav-child">
-                <dd><a lay-href="{:url('detail.index')}">玩家游戏明细</a></dd>
+                <dd><a lay-href="<?php echo url('detail.index'); ?>">玩家游戏明细</a></dd>
               </dl>
             </li>
             <li data-name="account" class="layui-nav-item">
@@ -116,13 +117,13 @@
               <dl class="layui-nav-child">
 
                 <dd>
-                  <a lay-href="{:url('account.proxyList')}">代理列表</a>
+                  <a lay-href="<?php echo url('account.proxyList'); ?>">代理列表</a>
                 </dd>
                 <dd data-name="workorder">
-                  <a lay-href="{:url('account.playerList')}">玩家列表</a>
+                  <a lay-href="<?php echo url('account.playerList'); ?>">玩家列表</a>
                 </dd>
                 <dd>
-                  <a lay-href="{:url('account.addProxy')}">新增代理</a>
+                  <a lay-href="<?php echo url('account.addProxy'); ?>">新增代理</a>
                 </dd>
               </dl>
             </li>
@@ -133,7 +134,7 @@
               </a>
               <dl class="layui-nav-child">
                 <dd>
-                  <a lay-href="{:url('user.list')}">用户列表</a>
+                  <a lay-href="<?php echo url('user.list'); ?>">用户列表</a>
                 </dd>
               </dl>
             </li>
@@ -144,7 +145,7 @@
               </a>
               <dl class="layui-nav-child">
                 <dd>
-                  <a lay-href="{:url('safeset.index')}">安全设置</a>
+                  <a lay-href="<?php echo url('safeset.index'); ?>">安全设置</a>
                 </dd>
               </dl>
             </li>
@@ -170,7 +171,7 @@
         </div>
         <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
           <ul class="layui-tab-title" id="LAY_app_tabsheader">
-            <li lay-id="{:url('home')}" lay-attr="{:url('home')}" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+            <li lay-id="<?php echo url('home'); ?>" lay-attr="<?php echo url('home'); ?>" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
           </ul>
         </div>
       </div>
@@ -179,7 +180,7 @@
       <!-- 主体内容 -->
       <div class="layui-body" id="LAY_app_body">
         <div class="layadmin-tabsbody-item layui-show">
-          <iframe src="{:url('home')}" frameborder="0" class="layadmin-iframe"></iframe>
+          <iframe src="<?php echo url('home'); ?>" frameborder="0" class="layadmin-iframe"></iframe>
         </div>
       </div>
       

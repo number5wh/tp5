@@ -1,7 +1,22 @@
-{extend name="common/base" /}
+<?php /*a:2:{s:77:"C:\Users\Administrator\Desktop\tp5\application\index\view\withdraw\apply.html";i:1552352872;s:74:"C:\Users\Administrator\Desktop\tp5\application\index\view\common\base.html";i:1552028062;}*/ ?>
 
-{block name="title"}分成提现{/block}
-{block name="content"}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>分成提现</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/src/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/src/layuiadmin/style/admin.css" media="all">
+    
+</head>
+<body>
+
+<div class="layui-fluid">
+    
 <div class="layui-card">
   <div class="layui-card-header layuiadmin-card-header-auto">
     <h2>分成提现</h2>
@@ -9,9 +24,9 @@
 
   <div class="layui-card-body">
     <div style="padding-bottom: 20px;">
-      <h3>余额：<span id="leftmoney">{$balance}</span></h3>
+      <h3>余额：<span id="leftmoney"><?php echo htmlentities($balance); ?></span></h3>
     </div>
-    <form class="layui-form" action="{:url('withdraw.doApply')}" method="post">
+    <form class="layui-form" action="<?php echo url('withdraw.doApply'); ?>" method="post">
       <div class="layui-form-item">
         <label for="" class="layui-form-label">账户类型</label>
         <div class="layui-input-block">
@@ -24,13 +39,13 @@
       <div class="layui-form-item">
         <label for="" class="layui-form-label">账号</label>
         <div class="layui-input-block">
-          <input type="text" name="account" id="drawaccount" value="{$info['alipay']}" lay-verify="required" placeholder="暂未绑定账号" class="layui-input" disabled>
+          <input type="text" name="account" id="drawaccount" value="<?php echo htmlentities($info['alipay']); ?>" lay-verify="required" placeholder="暂未绑定账号" class="layui-input" disabled>
         </div>
       </div>
       <div class="layui-form-item">
         <label for="" class="layui-form-label">提现金额</label>
         <div class="layui-input-block">
-          <input type="text" name="amount" id="getmoney" value="" lay-verify="amount" placeholder="请输入金额，可提现金额为{$balance}" class="layui-input" >
+          <input type="text" name="amount" id="getmoney" value="" lay-verify="amount" placeholder="请输入金额，可提现金额为<?php echo htmlentities($balance); ?>" class="layui-input" >
         </div>
       </div>
       <div class="layui-form-item">
@@ -51,9 +66,11 @@
   </div>
 </div>
 
-{/block}
 
-{block name="script"}
+</div>
+
+<script src="/src/layuiadmin/layui/layui.js?t=1"></script>
+
 <script>
   layui.extend({
     sendmsg:'../src/layuiadmin/mymod/sendmsg'
@@ -79,10 +96,10 @@
     form.on('select(withdraw_select)', function(data){
       if (data.value == 1) {
         //支付宝
-        var account = "{$info['alipay']}";
+        var account = "<?php echo htmlentities($info['alipay']); ?>";
       } else {
         //银行卡
-        var account = "{$info['cardaccount']}";
+        var account = "<?php echo htmlentities($info['cardaccount']); ?>";
       }
       if (!account) {
         $('#drawaccount').val("").attr('placeholder', '暂未绑定账号');
@@ -143,5 +160,7 @@
     });
   });
 </script>
-{/block}
+
+</body>
+</html>
 

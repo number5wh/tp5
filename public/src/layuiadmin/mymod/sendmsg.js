@@ -14,7 +14,7 @@ layui.define(function (exports) {
             if (type == 1) {
                 url = '/sendmsg/index';
                 data = {};
-            }else {
+            } else {
                 if(!(/^1\d{10}$/.test(mobile))){
                     layer.msg('手机号有误');
                     return false;
@@ -24,12 +24,7 @@ layui.define(function (exports) {
             }
 
             function sendMessage() {
-                curCount = count;
-                //设置button效果，开始计时
-                $(id).attr("disabled", "true");
-                $(id).html(curCount + "秒后可重新发送");
-                $(id).removeClass('layui-btn-normal').addClass('layui-btn-disabled');
-                InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
+
                 //请求后台发送验证码 TODO
                 $.ajax({
                     type:'post',
@@ -38,6 +33,13 @@ layui.define(function (exports) {
                     dataType:'json',
                     success: function(res) {
                         if (res.code === 0) {
+                            curCount = count;
+                            //设置button效果，开始计时
+                            $(id).attr("disabled", "true");
+                            $(id).html(curCount + "秒后可重新发送");
+                            $(id).removeClass('layui-btn-normal').addClass('layui-btn-disabled');
+                            InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
+
                             layer.msg(res.msg,{icon:6});
                         } else {
                             layer.msg(res.msg, {icon:5});

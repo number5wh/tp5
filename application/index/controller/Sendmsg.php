@@ -4,7 +4,6 @@ namespace app\index\controller;
 
 use sms\Sms;
 use think\Controller;
-use think\Request;
 use app\index\model\Proxy;
 class Sendmsg extends Controller
 {

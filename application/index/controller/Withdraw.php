@@ -184,6 +184,7 @@ class Withdraw extends Controller
         }
 
         save_log('withdraw/apply', "status:1,returncode:0,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account}");
+        $data['leftmoney'] = $leftMoney;
         return json($data);
     }
 

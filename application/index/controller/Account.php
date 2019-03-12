@@ -125,12 +125,12 @@ class Account extends Controller
     }
 
     //代理列表
-    public function agentList()
+    public function proxyList()
     {
-        return view('agentList');
+        return view('proxyList');
     }
 
-    public function agentListData()
+    public function proxyListData()
     {
         $data = [
             'code' => 0,
@@ -151,14 +151,14 @@ class Account extends Controller
         //获取下级代理列表
         $proxyList = $teamlevelModel->getList(['parent_id' => session('code')], $page, $limit);
         if ($proxyList) {
-            $this->handleAgent($proxyList);
+            $this->handleProxy($proxyList);
         }
         $data['data'] = $proxyList;
         return json($data);
     }
 
     //按名称搜索代理
-    public function searchAgent()
+    public function searchProxy()
     {
         //检查参数
         $data   = [
@@ -182,14 +182,14 @@ class Account extends Controller
         }
         $proxyList = $teamlevelModel->getList($where, $page, $limit);
         if ($proxyList) {
-            $this->handleAgent($proxyList);
+            $this->handleProxy($proxyList);
         }
         $data['data'] = $proxyList;
         return json($data);
     }
 
     //获取代理额外数据
-    private function handleAgent(&$proxyList) {
+    private function handleProxy(&$proxyList) {
         $proxyListId = array_column($proxyList, 'proxy_id');
         //查询总充值
         $paytimeModel = new Paytime();
@@ -258,9 +258,9 @@ class Account extends Controller
     }
 
     //新增代理
-    public function addAgent()
+    public function addProxy()
     {
-        return view('addAgent');
+        return view('addProxy');
     }
 
 }
