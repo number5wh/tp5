@@ -8,6 +8,7 @@ class Index extends Controller
     //模板
     public function layout()
     {
+        $this->assign('username', session('username'));
         return view('/layout');
     }
 

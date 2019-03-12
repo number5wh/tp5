@@ -30,7 +30,7 @@
       <div class="layui-form-item">
         <label for="" class="layui-form-label">提现金额</label>
         <div class="layui-input-block">
-          <input type="text" name="amount" id="getmoney" value="" lay-verify="amount" placeholder="请输入金额，可提现金额为{$balance}" class="layui-input" >
+          <input type="text" name="amount" id="getmoney" value="" lay-verify="required" placeholder="请输入金额，可提现金额为{$balance}" class="layui-input" >
         </div>
       </div>
       <div class="layui-form-item">
@@ -128,7 +128,7 @@
           $('#getcode').val('');
           if (res.code === 0) {
             $('#leftmoney').html(res.leftmoney);
-            $('#getcode').attr('placeholder', "请输入金额，可提现金额为"+res.leftmoney);
+            $('#getmoney').attr('placeholder', "请输入金额，可提现金额为"+res.leftmoney);
             layer.msg(res.msg, {icon: 6});
           } else {
             layer.msg(res.msg, {icon: 5});

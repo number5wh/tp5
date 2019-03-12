@@ -13,7 +13,7 @@ class changeAlipay extends Validate
      * @var array
      */	
 	protected $rule = [
-        '__token__' => 'token|require',
+        //'__token__' => 'token|require',
         'alipay_name|姓名' => 'require',
         'alipay|支付宝账号' => 'require'
     ];

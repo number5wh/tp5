@@ -14,6 +14,7 @@ use think\Controller;
 
 class Safeset extends Controller
 {
+    protected $middleware = ['Auth'];
     public function index()
     {
         return view('index');

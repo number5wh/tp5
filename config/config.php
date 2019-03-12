@@ -31,4 +31,7 @@ return [
     ],
     //短信超时时间
     'sms_expire' => 60,
+
+    //分成比例相差值
+    'percent_diff' => 10
 ];

@@ -13,7 +13,7 @@ class Login extends Validate
      * @var array
      */	
 	protected $rule = [
-	    '__token__' => 'token|require',
+//	    '__token__' => 'token|require',
         'username|登录名'  => 'require|max:50',
         'password|密码'   => 'require|min:6'
     ];

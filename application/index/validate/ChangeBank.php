@@ -13,7 +13,7 @@ class changeBank extends Validate
      * @var array
      */	
 	protected $rule = [
-        '__token__' => 'token|require',
+        //'__token__' => 'token|require',
         'name|姓名' => 'require',
         'cardaccount|银行账号' => 'require',
         'bank|开户行' => 'require',

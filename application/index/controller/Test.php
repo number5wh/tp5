@@ -2,6 +2,7 @@
 
 namespace app\index\controller;
 
+use app\index\model\Teamlevel;
 use sms\Sms;
 use think\Controller;
 use think\Request;
@@ -16,8 +17,10 @@ class Test extends Controller
     public function index()
     {
         //
-        $orderId = random_orderid();
-        var_dump($orderId);
+        $teamlevelModel = new Teamlevel();
+        //获取当前用户的分销级别
+        $level = $teamlevelModel->getRow(['proxy_id' => session('code')], 'max(level) level');
+        var_dump(session('code'));
         die;
     }
 

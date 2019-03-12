@@ -45,7 +45,7 @@
                 data:{
                     'username' : $.trim(data.field.username),
                     'password' : $.trim(data.field.password),
-                    '__token__': $.trim(data.field.__token__)
+                    // '__token__': $.trim(data.field.__token__)
                 },
                 dataType:'json',
                 success: function(res) {
@@ -53,8 +53,8 @@
                         location.href = '/';
                     } else {
                         layer.msg(res.msg, {icon:5});
-                        var token = getToken.getToken();
-                        $("input[name='__token__']").val(token);
+                        // var token = getToken.getToken();
+                        // $("input[name='__token__']").val(token);
                     }
                 }
             });

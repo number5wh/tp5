@@ -130,8 +130,9 @@ if (!function_exists('save_log')) {
 
 //获取生成的代理code
 if (!function_exists('get_proxy_code')) {
-    function get_proxy_code($id)
+    function get_proxy_code()
     {
+        $id = intval(\app\index\model\Proxy::max('id')) + 1;
         $ret = 'WZ';
         if ($id < 10) {
             $ret .= '000000'.$id;
@@ -149,5 +150,17 @@ if (!function_exists('get_proxy_code')) {
             $ret .= $id;
         }
         return $ret;
+    }
+}
+
+//生成分成比例列表
+if (!function_exists('generate_percent')) {
+    function generate_percent($percent)
+    {
+        $percentList = [];
+        for ($i = 10; $i<$percent; $i += config('config.percent_diff')) {
+            $percentList[] = $i;
+        }
+        return array_reverse($percentList);
     }
 }

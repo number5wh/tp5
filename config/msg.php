@@ -22,4 +22,10 @@ return [
     'no_account' => '提现账户不存在',
     'withdraw_0' => '提现申请成功',
     'withdraw_1' => '提现申请失败',
+
+    'add_proxy_0' => '新增代理账号成功',
+    'add_proxy_1' => '当前账号没有新增代理权限',
+    'add_proxy_2' => '分成比例有误',
+    'add_proxy_3' => '账号名已存在',
+    'add_proxy_4' => '添加失败，请稍后重试',
 ];

@@ -43,6 +43,7 @@ Route::group('user', function(){
     Route::get('getListData', 'user/getListData')->name('user.listData');
 })->prefix('index/');
 
+
 //账号信息
 Route::group('account', function(){
     Route::get('playerList', 'account/playerList')->name('account.playerList');
@@ -53,6 +54,7 @@ Route::group('account', function(){
     Route::post('searchProxy', 'account/searchProxy')->name('account.searchProxy');
     Route::get('addProxy', 'account/addProxy')->name('account.addProxy');
     Route::post('doAddProxy', 'account/doAddProxy')->name('account.doAddProxy');
+    Route::get('getPercent', 'account/getPercent')->name('account.getPercent');
 })->prefix('index/');
 
 //安全设置

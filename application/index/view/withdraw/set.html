@@ -97,12 +97,12 @@
         data: {
           'alipay_name': $.trim(data.field.alipay_name),
           'alipay': $.trim(data.field.alipay),
-          '__token__': $.trim(data.field.__token__)
+          //'__token__': $.trim(data.field.__token__)
         },
         dataType: 'json',
         success: function (res) {
-          var token = getToken.getToken();
-          $("input[name='__token__']").val(token);
+          // var token = getToken.getToken();
+          // $("input[name='__token__']").val(token);
           if (res.code === 0) {
             layer.msg(res.msg, {icon: 6});
           } else {
@@ -122,12 +122,12 @@
           'name': $.trim(data.field.name),
           'bank': $.trim(data.field.bank),
           'cardaccount': $.trim(data.field.cardaccount),
-          '__token__': $.trim(data.field.__token__)
+          // '__token__': $.trim(data.field.__token__)
         },
         dataType: 'json',
         success: function (res) {
-          var token = getToken.getToken();
-          $("input[name='__token__']").val(token);
+          // var token = getToken.getToken();
+          // $("input[name='__token__']").val(token);
           if (res.code === 0) {
             layer.msg(res.msg, {icon: 6});
           } else {

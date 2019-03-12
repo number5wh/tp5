@@ -67,7 +67,14 @@ class CommonModel extends Model
     //新增数据
     public function add($data)
     {
-        $info = Db::table($this->table)->data($data)->insert();
+        $info = Db::table($this->table)->insertGetId($data);
+        return $info;
+    }
+
+    //新增多条数据
+    public function addAll($data)
+    {
+        $info = Db::table($this->table)->insertAll($data);
         return $info;
     }
 

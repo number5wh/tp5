@@ -4,20 +4,19 @@ namespace app\index\controller;
 
 use sms\Sms;
 use think\Controller;
-use think\facade\Session;
 use app\index\model\Proxy;
-
+use think\facade\Cookie;
 class Login extends Controller
 {
     public function login()
     {
         $this->checkLong();
         if (session('?username')) {
-            return redirect(url('/'));
+            return redirect(url('layout'));
         } else {
             $username = '';
-            if (isset($_COOKIE['username'])){
-                $username = $_COOKIE['username'];
+            if (Cookie::has('username')){
+                $username = cookie('username');
             }
             $this->assign('username',$username);
             return view('login');

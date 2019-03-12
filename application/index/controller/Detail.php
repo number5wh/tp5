@@ -9,6 +9,7 @@ namespace app\index\controller;
 use think\Controller;
 class Detail extends Controller
 {
+    protected $middleware = ['Auth'];
     public function index()
     {
         return view('index');

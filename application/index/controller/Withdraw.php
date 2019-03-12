@@ -13,6 +13,7 @@ use sms\Sms;
 use think\Controller;
 use app\index\model\Bankinfo;
 use app\index\model\Checklog;
+use think\Db;
 
 class Withdraw extends Controller
 {
@@ -136,19 +137,9 @@ class Withdraw extends Controller
         }
 
         //开始处理提现申请
-        //先扣除总额
         $leftMoney = $userInfo['balance'] - $amount;
-        $res       = $proxyModel->updateById(
-            session('id'),
-            ['balance' => $leftMoney]
-        );
-        if (!$res) {
-            $data['code'] = 6;
-            $data['msg']  = config('msg.withdraw_1');
-            save_log('withdraw/apply', "status:0,returncode:1,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account}");
-            return json($data);
-        }
-        //再添加到提现表
+
+        //提现表数据
         $checklogModel = new Checklog();
         $orderid       = random_orderid();
         $addData       = [
@@ -170,16 +161,19 @@ class Withdraw extends Controller
             $addData['bank']        = $info['bank'];
             $addData['cardaccount'] = $info['cardaccount'];
         }
-        $res2 = $checklogModel->add($addData);
-        if (!$res2) {
-            //总金额还原
-            $proxyModel->updateById(
-                session('id'),
-                ['balance' => $userInfo['balance']]
-            );
-            $data['code'] = 7;
+        //事务处理
+        Db::startTrans();
+        try {
+            //先扣除总额
+            $proxyModel->updateById(session('id'), ['balance' => $leftMoney]);
+            //添加提现表
+            $checklogModel->add($addData);
+            Db::commit();
+        } catch (\Exception $e) {
+            $data['code'] = 6;
             $data['msg']  = config('msg.withdraw_1');
-            save_log('withdraw/apply', "status:0,returncode:2,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account}");
+            Db::rollback();
+            save_log('withdraw/apply', "status:0,returncode:1,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account}");
             return json($data);
         }
 
@@ -200,11 +194,11 @@ class Withdraw extends Controller
     //修改新增支付宝账号
     public function doSetAlipay()
     {
-        $result = $this->validate($this->request->post(), 'app\index\validate\ChangeAlipay');
         $data   = [
             'code' => 0,
             'msg'  => config('msg.update_success')
         ];
+        $result = $this->validate($this->request->post(), 'app\index\validate\ChangeAlipay');
         if (true !== $result) {
             $data['code'] = 1;
             $data['msg']  = $result;
