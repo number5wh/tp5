@@ -2,9 +2,12 @@
 
 namespace app\index\controller;
 
+use app\index\model\Paytime;
+use app\index\model\Playerorder;
 use app\index\model\Teamlevel;
 use sms\Sms;
 use think\Controller;
+use think\Db;
 use think\Request;
 
 class Test extends Controller
@@ -17,10 +20,14 @@ class Test extends Controller
     public function index()
     {
         //
-        $teamlevelModel = new Teamlevel();
-        //获取当前用户的分销级别
-        $level = $teamlevelModel->getRow(['proxy_id' => session('code')], 'max(level) level');
-        var_dump(session('code'));
+        $paytimeModel = new Paytime();
+        $day  = date('Y-m-d', strtotime('-1 day'));
+        $where = [
+            ['proxy_id', '=', session('code')],
+            ['addtime', 'like', $day.'%']
+        ];
+        $info = intval($paytimeModel->getValue($where, 'sum(totalfee) totalfee'));
+        var_dump($info);
         die;
     }
 

@@ -30,7 +30,7 @@
       <div class="layui-form-item">
         <label for="" class="layui-form-label">提现金额</label>
         <div class="layui-input-block">
-          <input type="text" name="amount" id="getmoney" value="" lay-verify="required" placeholder="请输入金额，可提现金额为{$balance}" class="layui-input" >
+          <input type="text" name="amount" id="getmoney" onkeyup="clearNoNum(this)" value="" lay-verify="required" placeholder="请输入金额，可提现金额为{$balance}" class="layui-input" >
         </div>
       </div>
       <div class="layui-form-item">
@@ -54,6 +54,17 @@
 {/block}
 
 {block name="script"}
+<script>
+  function clearNoNum(obj){
+    obj.value = obj.value.replace(/[^\d.]/g,"");  //清除“数字”和“.”以外的字符
+    obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的
+    obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+    obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');//只能输入两个小数
+    if(obj.value.indexOf(".")< 0 && obj.value !=""){
+      obj.value= parseFloat(obj.value);
+    }
+  }
+</script>
 <script>
   layui.extend({
     sendmsg:'../src/layuiadmin/mymod/sendmsg'

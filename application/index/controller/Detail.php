@@ -7,6 +7,7 @@
  */
 namespace app\index\controller;
 use think\Controller;
+use app\index\model\Playerorder;
 class Detail extends Controller
 {
     protected $middleware = ['Auth'];
@@ -20,26 +21,20 @@ class Detail extends Controller
         $data = [
             'code' => 0,
             'msg' => '',
-            'count' => 50,
-            'data' => [
-                [
-                    'id' => 1,
-                    'account' => '11111111111',
-                    'time'   => date('Y-m-d H:i:s'),
-                    'room' => '1',
-                    'win'  => 12345,
-                    'comment' => 1
-                ],
-                [
-                    'id' => 2,
-                    'account' => '11111111112',
-                    'time'   => date('Y-m-d H:i:s'),
-                    'room' => '2',
-                    'win' => -222,
-                    'comment' => 1
-                ]
-            ]
+            'count' => 0,
+            'data' => []
         ];
+        $page  = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
+        $limit = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
+
+        $playerorderModel = new Playerorder();
+        $count = $playerorderModel->getCount(['proxy_id' => session('code')]);
+        $data['count'] = $count;
+        if (!$count) {
+            return json($data);
+        }
+        $list = $playerorderModel->getList(['proxy_id' => session('code')], $page, $limit, 'id, userid, game, total_money, createtime');
+        $data['data'] = $list;
         return json($data);
     }
 }

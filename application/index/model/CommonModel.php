@@ -47,6 +47,13 @@ class CommonModel extends Model
         return $info;
     }
 
+    //获取某个字段的数据
+    public function getValue($where, $field)
+    {
+        $info = Db::table($this->table)->where($where)->value($field);
+        return $info;
+    }
+
     //根据id获取记录
     public function getRowById($id, $field='*')
     {

@@ -48,6 +48,27 @@ layui.define(function(exports){
             ,carousel = layui.carousel
             ,echarts = layui.echarts;
 
+        //统计总量和昨日量
+        var getTotal = (function(){
+            $.ajax({
+                type: 'post',
+                url: '/index/getStatistics',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code === 0) {
+                        $('#proxynum').html(res.proxynum);
+                        $('#playernum').html(res.playernum);
+                        $('#totalin').html(res.totalin);
+                        $('#totalfee').html(res.totalfee);
+                        $('#totaltax').html(res.totaltax);
+                        $('#yesterdayfee').html(res.yesterdayfee);
+                        $('#yesterdayin').html(res.yesterdayin);
+                        $('#yesterdaytax').html(res.yesterdaytax);
+                    }
+                }
+            })
+        })();
+
         //统计利润
         var getData = (function(){
             $.ajax({

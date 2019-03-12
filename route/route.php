@@ -22,7 +22,7 @@ Route::group('index', function(){
         return Request::token();
     })->cache(false)->name('getToken');
     Route::post('profitStatistics', 'index/profitStatistics')->name('index.profitStatistics');
-
+    Route::post('getStatistics', 'index/getStatistics')->name('index.getStatistics');
 })->prefix('index/');
 
 //提现管理
