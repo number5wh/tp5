@@ -106,7 +106,7 @@ layui.define(function(exports){
                                 type : 'value'
                             }],
                             series : [{
-                                name:'PV',
+                                name:'消费金额',
                                 type:'line',
                                 smooth:true,
                                 itemStyle: {normal: {areaStyle: {type: 'default'}}},

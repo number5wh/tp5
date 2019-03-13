@@ -25,7 +25,7 @@ class CommonModel extends Model
     }
 
     //获取列表所有
-    public function getListAll($where, $field='*', $orderBy = [], $groupBy = [])
+    public function getListAll($where, $field='*', $orderBy = [], $groupBy = '')
     {
         $info = Db::table($this->table)
             ->where($where)

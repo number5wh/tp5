@@ -48,15 +48,34 @@ class Index extends Controller
         $data = [
             'code' => 0,
             'msg' => '',
-            'data' => [
-                111,222,333,444,555,666,777
-            ],
-            'date' => [
-                1,2,3,4,5,6,7
-            ]
+            'data' => [],
+            'date' => []
         ];
+        $incomelogModel = new Incomelog();
+        $beginDay  = date('Ymd', strtotime('-7 day'));
+        $endDay    = date('Ymd', strtotime('-1 day'));
+        $where = [
+            ['proxy_id', '=', session('code')],
+            ['createday', '>=', $beginDay],
+            ['createday', '<=', $endDay]
+        ];
+        $info = $incomelogModel->getListAll($where, 'sum(changmoney) changmoney, createday', [], 'createday');
 
-      return json($data);
+        $date = $res = [];
+        for ($i = $beginDay; $i<=$endDay; $i++) {
+            $date[] = $i;
+            $res[$i] = 0;
+            foreach ($info as $v) {
+                if ($v['createday'] == $i) {
+                    $res[$i] = round($v['changmoney'], 2);
+                    break;
+                }
+            }
+        }
+        ksort($res);
+        $data['data'] = array_values($res);
+        $data['date'] = $date;
+        return json($data);
     }
 
     //统计下级代理个数
@@ -129,7 +148,7 @@ class Index extends Controller
     {
         $incomelogModel = new Incomelog();
         $day  = date('Ymd', strtotime('-1 day'));
-        $where = ['proxy_id' => session('id'), 'createday' => $day];
+        $where = ['proxy_id' => session('code'), 'createday' => $day];
         $info = intval($incomelogModel->getValue($where, 'sum(changmoney) changmoney'));
         return $info;
     }
