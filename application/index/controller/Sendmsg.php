@@ -2,7 +2,7 @@
 
 namespace app\index\controller;
 
-use sms\Sms;
+use apiData\Sms;
 use think\Controller;
 use app\index\model\Proxy;
 class Sendmsg extends Controller

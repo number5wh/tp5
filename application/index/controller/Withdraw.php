@@ -9,7 +9,7 @@
 namespace app\index\controller;
 
 use app\index\model\Proxy;
-use sms\Sms;
+use apiData\Sms;
 use think\Controller;
 use app\index\model\Bankinfo;
 use app\index\model\Checklog;

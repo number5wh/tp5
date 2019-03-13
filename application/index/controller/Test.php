@@ -2,10 +2,11 @@
 
 namespace app\index\controller;
 
+use apiData\PlayerData;
 use app\index\model\Paytime;
 use app\index\model\Playerorder;
 use app\index\model\Teamlevel;
-use sms\Sms;
+use apiData\Sms;
 use think\Controller;
 use think\Db;
 use think\Request;
@@ -20,13 +21,8 @@ class Test extends Controller
     public function index()
     {
         //
-        $paytimeModel = new Paytime();
-        $day  = date('Y-m-d', strtotime('-1 day'));
-        $where = [
-            ['proxy_id', '=', session('code')],
-            ['addtime', 'like', $day.'%']
-        ];
-        $info = intval($paytimeModel->getValue($where, 'sum(totalfee) totalfee'));
+        $info = PlayerData::getOnlineList('1');
+        //$info = Ostime::getOsTime();
         var_dump($info);
         die;
     }

@@ -2,7 +2,6 @@
 
 namespace app\index\controller;
 
-use sms\Sms;
 use think\Controller;
 use app\index\model\Proxy;
 use think\facade\Cookie;

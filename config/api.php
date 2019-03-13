@@ -7,5 +7,5 @@
  */
 return [
     'appkey'     => 'wxcdefv19677581334',
-    "ServiceUrl" => "http://service.gamewuzhou.com:20108",
+    "ServiceUrl" => "http://service.game2019.net:20108/",
 ];

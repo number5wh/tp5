@@ -9,7 +9,7 @@
 namespace app\index\controller;
 
 use app\index\model\Proxy;
-use sms\Sms;
+use apiData\Sms;
 use think\Controller;
 
 class Safeset extends Controller
