@@ -21,7 +21,7 @@ class Test extends Controller
     public function index()
     {
         //
-        $info = PlayerData::getOnlineList('1');
+        $info = PlayerData::getOnlineList('WZ0000011');
         //$info = Ostime::getOsTime();
         var_dump($info);
         die;

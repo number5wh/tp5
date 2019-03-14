@@ -349,7 +349,7 @@ class Account extends Controller
         $insertData2 = [['username' => $username, 'proxy_id' => $code, 'parent_id' => session('code'), 'level' => 1]];
         //组装插入分销关系表数据
         foreach ($fxList as $fx) {
-            if ($fx['level'] == 1 || $fx['level'] == 2) {
+            if ($fx['level'] == 1) {
                 $insertData2[] = ['username' => $username, 'proxy_id' => $code, 'parent_id' => $fx['parent_id'], 'level' => intval($fx['level']) + 1];
             }
         }

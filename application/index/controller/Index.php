@@ -1,5 +1,6 @@
 <?php
 namespace app\index\controller;
+use apiData\PlayerData;
 use app\index\model\Incomelog;
 use app\index\model\Paytime;
 use app\index\model\Player;
@@ -24,7 +25,7 @@ class Index extends Controller
         return view('home');
     }
 
-    //总统计和昨日统计
+    //总统计,昨日统计,在线玩家人数
     public function getStatistics()
     {
         $data = [
@@ -39,6 +40,12 @@ class Index extends Controller
         $data['yesterdayfee'] = $this->getYesterdayFee();
         $data['yesterdayin'] = $this->getYesterdayIn();
         $data['yesterdaytax'] = $this->getYesterdayTax();
+        $online = PlayerData::getOnlineList(session('code'));
+        if ($online->code != 0) {
+            $data['onlinenum'] = 0;
+        } else {
+            $data['onlinenum'] = count($online->data);
+        }
         return json($data);
     }
 

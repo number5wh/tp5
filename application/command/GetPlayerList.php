@@ -63,7 +63,7 @@ class GetPlayerList extends Command
                             'accountid' => $data->accountid,
                             //'ismobile' => $data->ismobile,
                             'regtime' => $data->regtime,
-                            'proxy_id' => $data->proxy, //是$proxy，记得改回来
+                            'proxy_id' => $proxy, //是$proxy，记得改回来
                             'nickname' => $data->nickname,
                             'addtime' => $insertTime
                         ];

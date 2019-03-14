@@ -64,6 +64,7 @@ layui.define(function(exports){
                         $('#yesterdayfee').html(res.yesterdayfee);
                         $('#yesterdayin').html(res.yesterdayin);
                         $('#yesterdaytax').html(res.yesterdaytax);
+                        $('#online').html(res.onlinenum);
                     }
                 }
             })
