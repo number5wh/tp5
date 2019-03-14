@@ -164,3 +164,19 @@ if (!function_exists('generate_percent')) {
         return array_reverse($percentList);
     }
 }
+
+//将tax转化为元单位(incomelog用)
+if (!function_exists('tax_change_incomelog')) {
+    function tax_change_incomelog($tax)
+    {
+        return round($tax/1000, 4);
+    }
+}
+
+//将tax转化为元单位(balance用)
+if (!function_exists('tax_change_balance')) {
+    function tax_change_balance($tax)
+    {
+        return round($tax/1000, 2);
+    }
+}

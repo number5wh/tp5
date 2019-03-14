@@ -33,11 +33,11 @@ class GetPlayerList extends Command
             //循环获取各自的玩家
             $info = PlayerData::getPlayerList($proxy);
             if ($info->code != 0) {
-                $output->writeln('code:'.$info->code.',msg:'.$info->msg);
+                $output->writeln('code:'.$info->code.',msg:'.$info->message);
             } else {
                 if (!$info->data) {
                     save_log('apidata/getPlayerList', "proxyId:{$proxy},handlemsg:nodata");
-                    $output->writeln('code:'.$info->code.',msg:'.$info->msg.'data:nodata');
+                    $output->writeln('code:'.$info->code.',msg:'.$info->message.'data:nodata');
                 }
                 $thirdplayerModel = new Thirdplayer();
                 $playerModel = new Player();
@@ -87,8 +87,9 @@ class GetPlayerList extends Command
                         save_log('apidata/getPlayerList', "proxyId:{$proxy},thirdnum:{$thirdnum},playernum:{$playernum},handlemsg:insertsuccess");
                         Db::commit();
                     } catch (\Exception $e) {
+                        Db::rollback();
                         save_log('apidata/getPlayerList', "proxyId:{$proxy},handlemsg:{$e->getMessage()}");
-                        $output->writeln('code:111,msg:'.$e->getMessage().'data:insertfail');
+                        $output->writeln('code:500,msg:'.$e->getMessage().'data:insertfail');
                     }
                 }
 

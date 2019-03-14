@@ -11,4 +11,5 @@
 
 return [
     'app\command\GetPlayerList',
+    'app\command\GetBillList',
 ];

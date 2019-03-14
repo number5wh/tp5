@@ -5,6 +5,7 @@ namespace app\index\controller;
 use apiData\PlayerData;
 use app\index\model\Paytime;
 use app\index\model\Playerorder;
+use app\index\model\Proxy;
 use app\index\model\Teamlevel;
 use apiData\Sms;
 use think\Controller;
@@ -21,9 +22,37 @@ class Test extends Controller
     public function index()
     {
         //
-        $info = PlayerData::getOnlineList('WZ0000011');
+        $proxyModel = new Proxy();
+        $proxy = 'WZ0000011';
+        $teamlevelModel = new Teamlevel();
+        $insertThirdData = $insertIncomeData = $levelData = [];
+        //获取自身分成
+        $selfPercent = $proxyModel->getValue(['code' => $proxy], 'percent');
+        $levelData[0] = [
+            'proxy_id' => $proxy,
+            'parent_id' => '',
+            'level' => 0,
+            'percent' => $selfPercent
+        ];
+        //分成级别
+        $teamlevels = $teamlevelModel->getListAll(['proxy_id' => $proxy]);
+        if ($teamlevels) {
+            foreach ($teamlevels as $l) {
+                $percent = $proxyModel->getValue(['code' => $l['parent_id']], 'percent');
+                $levelData[$l['level']] = [
+                    'proxy_id' => $proxy,
+                    'parent_id' => $l['parent_id'],
+                    'level' => $l['level'],
+                    'percent' => $percent
+                ];
+            }
+        }
+
+
+        //$info = PlayerData::getOnlineList('WZ0000011');
         //$info = Ostime::getOsTime();
-        var_dump($info);
+        $totalTax = tax_change(65*20/100);
+        var_dump($levelData);
         die;
     }
 
