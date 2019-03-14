@@ -27,14 +27,14 @@ class Detail extends Controller
         $page  = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
         $limit = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
 
-        $playerorderModel = new Playerorder();
-        $count = $playerorderModel->getCount(['proxy_id' => session('code')]);
-        $data['count'] = $count;
-        if (!$count) {
-            return json($data);
-        }
-        $list = $playerorderModel->getList(['proxy_id' => session('code')], $page, $limit, 'id, userid, game, total_money, createtime');
-        $data['data'] = $list;
+//        $playerorderModel = new Playerorder();
+//        $count = $playerorderModel->getCount(['proxy_id' => session('code')]);
+//        $data['count'] = $count;
+//        if (!$count) {
+//            return json($data);
+//        }
+//        $list = $playerorderModel->getList(['proxy_id' => session('code')], $page, $limit, 'id, userid, game, total_money, createtime');
+//        $data['data'] = $list;
         return json($data);
     }
 }

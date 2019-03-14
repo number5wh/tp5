@@ -1,4 +1,7 @@
 <?php
+/**
+ * 获取玩家注册列表 5分钟左右读取一次
+ */
 
 namespace app\command;
 
@@ -18,83 +21,84 @@ class GetPlayerList extends Command
         // 指令配置
         $this->setName('getPlayerList');
         // 设置参数
-        
+
     }
 
     protected function execute(Input $input, Output $output)
     {
-    	// 指令输出
-        save_log('apidata/getPlayerList', "start at:".date('Y-m-d H:i:s'));
+        // 指令输出
+        save_log('apidata/getPlayerList', "start at:" . date('Y-m-d H:i:s'));
         //获取代理列表
         $proxyModel = new Proxy();
-        $proxyList = $proxyModel->getListAll([], 'code');
-        $proxyList = array_column($proxyList, 'code');
+        $proxyList  = $proxyModel->getListAll([], 'code');
+        $proxyList  = array_column($proxyList, 'code');
         foreach ($proxyList as $proxy) {
             //循环获取各自的玩家
             $info = PlayerData::getPlayerList($proxy);
             if ($info->code != 0) {
-                $output->writeln('code:'.$info->code.',msg:'.$info->message);
-            } else {
-                if (!$info->data) {
-                    save_log('apidata/getPlayerList', "proxyId:{$proxy},handlemsg:nodata");
-                    $output->writeln('code:'.$info->code.',msg:'.$info->message.'data:nodata');
-                }
-                $thirdplayerModel = new Thirdplayer();
-                $playerModel = new Player();
-                $insertThirdData = $insertPlayerData = [];
-                $insertTime = date('YmdHis');
-                $thirdnum = $playernum = 0;
-                foreach ($info->data as $data) {
-                    if (!$thirdplayerModel->getCount(['userid' => $data->userid])) {
-                        $insertThirdData[] = [
-                            'userid' => $data->userid,
-                            'accountid' => $data->accountid,
-                            'regtime' => $data->regtime,
-                            //'ismobile' => $data->ismobile,
-                            'nickname' => $data->nickname,
-                            'inserttime' => $insertTime
-                        ];
-                        $thirdnum++;
-                    }
-
-                    if (!$playerModel->getCount(['userid' => $data->userid])) {
-                        $insertPlayerData[] = [
-                            'userid' => $data->userid,
-                            'accountid' => $data->accountid,
-                            //'ismobile' => $data->ismobile,
-                            'regtime' => $data->regtime,
-                            'proxy_id' => $proxy, //是$proxy，记得改回来
-                            'nickname' => $data->nickname,
-                            'addtime' => $insertTime
-                        ];
-                        $playernum++;
-                    }
-                }
-
-
-                //插入数据
-                if ($insertThirdData || $insertPlayerData) {
-                    Db::startTrans();
-                    try {
-                        //插入第三方表数据
-                        if ($insertThirdData) {
-                            $thirdplayerModel->addAll($insertThirdData);
-                        }
-                        //插入玩家表数据
-                        if ($insertPlayerData) {
-                            $playerModel->addAll($insertPlayerData);
-                        }
-                        save_log('apidata/getPlayerList', "proxyId:{$proxy},thirdnum:{$thirdnum},playernum:{$playernum},handlemsg:insertsuccess");
-                        Db::commit();
-                    } catch (\Exception $e) {
-                        Db::rollback();
-                        save_log('apidata/getPlayerList', "proxyId:{$proxy},handlemsg:{$e->getMessage()}");
-                        $output->writeln('code:500,msg:'.$e->getMessage().'data:insertfail');
-                    }
-                }
-
+                $output->writeln('code:' . $info->code . ',msg:' . $info->message);
+                continue;
             }
+            if (!$info->data) {
+                save_log('apidata/getPlayerList', "proxyId:{$proxy},handlemsg:nodata");
+                $output->writeln('code:' . $info->code . ',msg:' . $info->message . 'data:nodata');
+                continue;
+            }
+            $thirdplayerModel = new Thirdplayer();
+            $playerModel      = new Player();
+            $insertThirdData  = $insertPlayerData = [];
+            $insertTime       = date('YmdHis');
+            $thirdnum         = $playernum = 0;
+            foreach ($info->data as $data) {
+                if (!$thirdplayerModel->getCount(['userid' => $data->userid])) {
+                    $insertThirdData[] = [
+                        'userid'     => $data->userid,
+                        'accountid'  => $data->accountid,
+                        'regtime'    => $data->regtime,
+                        //'ismobile' => $data->ismobile,
+                        'nickname'   => $data->nickname,
+                        'inserttime' => $insertTime
+                    ];
+                    $thirdnum++;
+                }
+
+                if (!$playerModel->getCount(['userid' => $data->userid])) {
+                    $insertPlayerData[] = [
+                        'userid'    => $data->userid,
+                        'accountid' => $data->accountid,
+                        //'ismobile' => $data->ismobile,
+                        'regtime'   => $data->regtime,
+                        'proxy_id'  => $proxy, //是$proxy，记得改回来
+                        'nickname'  => $data->nickname,
+                        'addtime'   => $insertTime
+                    ];
+                    $playernum++;
+                }
+            }
+
+
+            //插入数据
+            if ($insertThirdData || $insertPlayerData) {
+                Db::startTrans();
+                try {
+                    //插入第三方表数据
+                    if ($insertThirdData) {
+                        $thirdplayerModel->addAll($insertThirdData);
+                    }
+                    //插入玩家表数据
+                    if ($insertPlayerData) {
+                        $playerModel->addAll($insertPlayerData);
+                    }
+                    Db::commit();
+                    save_log('apidata/getPlayerList', "proxyId:{$proxy},thirdnum:{$thirdnum},playernum:{$playernum},handlemsg:insertsuccess");
+                } catch (\Exception $e) {
+                    Db::rollback();
+                    save_log('apidata/getPlayerList', "proxyId:{$proxy},handlemsg:{$e->getMessage()}");
+                    $output->writeln('code:500,msg:' . $e->getMessage() . 'data:insertfail');
+                }
+            }
+
         }
-        save_log('apidata/getPlayerList', "end at:".date('Y-m-d H:i:s'));
+        save_log('apidata/getPlayerList', "end at:" . date('Y-m-d H:i:s'));
     }
 }

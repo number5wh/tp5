@@ -1,9 +1,12 @@
 <?php
-
+/**
+ * 获取税收账单(一天读取一次)
+ */
 namespace app\command;
 
 use apiData\PlayerData;
 use app\index\model\Incomelog;
+use app\index\model\Playerorder;
 use app\index\model\Proxy;
 use app\index\model\Teamlevel;
 use app\index\model\ThirdPlayerOrder;
@@ -44,7 +47,7 @@ class GetBillList extends Command
             }
 
             $teamlevelModel  = new Teamlevel();
-            $insertThirdData = $insertIncomeData = $levelData = [];
+            $insertThirdData = $insertIncomeData = $insertOrderData = $levelData = [];
             //获取自身分成
             $selfPercent  = $proxyModel->getValue(['code' => $proxy], 'percent');
             $levelData[0] = [
@@ -72,6 +75,7 @@ class GetBillList extends Command
             $timestamp             = time();
             $thirdPlayerOrderModel = new ThirdPlayerOrder();
             $incomelogModel        = new Incomelog();
+            $playerorderModel      = new Playerorder();
 
             //计算总税收。用于更新账户余额和历史金额
             $allTax = 0;
@@ -82,19 +86,30 @@ class GetBillList extends Command
                     'userid'     => $data->userid,
                     'game'       => '',
                     'tax'        => $data->tax,
-                    'time'       => $data->date,
-                    'inserttime' => $insertTime
+                    'inserttime' => $insertTime,
+                    'time'      => $data->date,
+                    'createday' => $today
+                ];
+                $insertOrderData = [
+                    'proxy_id' => $proxy,
+                    'userid'   => $data->userid,
+                    'game'     => '',
+                    'total_tax' => change_to_yuan($data->tax, 4),
+                    'time'      => $data->date,
+                    'createday' => $today,
+                    'createtime' => $insertTime,
                 ];
                 foreach ($levelData as $level => $lv) {
-                    $totalTax = tax_change_incomelog($data->tax);
+                    $totalTax = change_to_yuan($data->tax, 4);
                     if ($level == 0) { //当前运营商
                         $insertIncomeData[] = [
                             'proxy_id'   => $lv['proxy_id'],
                             'totaltax'   => $totalTax,
-                            'changmoney' => tax_change_incomelog($data->tax * $lv['percent'] / 100),
+                            'changmoney' => change_to_yuan($data->tax * $lv['percent'] / 100, 4),
+                            'time'       => $data->date,
                             'createtime' => $timestamp,
                             'createday'  => $today,
-                            'descript'   => $proxy . '代理的玩家的税收分成，总金额' . tax_change_incomelog($data->tax * $lv['percent'] / 100)
+                            'descript'   => $proxy . '代理的玩家的税收分成，总金额' . change_to_yuan($data->tax * $lv['percent'] / 100, 4)
                         ];
                     } else { //1级代理或2级代理
                         $getPercent = intval($lv['percent'] - $levelData[$level - 1]['percent']);
@@ -102,10 +117,11 @@ class GetBillList extends Command
                             $insertIncomeData[] = [
                                 'proxy_id'   => $lv['proxy_id'],
                                 'totaltax'   => $totalTax,
-                                'changmoney' => tax_change_incomelog($data->tax * $getPercent / 100),
+                                'changmoney' => change_to_yuan($data->tax * $getPercent / 100, 4),
+                                'time'       => $data->date,
                                 'createtime' => $timestamp,
                                 'createday'  => $today,
-                                'descript'   => $proxy . '给' . $level . '级代理税收分成，总金额' . tax_change_incomelog($data->tax * $getPercent / 100)
+                                'descript'   => $proxy . '给' . $level . '级代理税收分成，总金额' . change_to_yuan($data->tax * $getPercent / 100, 4)
                             ];
                         }
                     }
@@ -119,7 +135,11 @@ class GetBillList extends Command
                     if ($insertThirdData) {
                         $thirdPlayerOrderModel->addAll($insertThirdData);
                     }
-                    //插入玩家表数据
+                    //插入税收表记录
+                    if ($insertOrderData) {
+                        $playerorderModel->addAll($insertOrderData);
+                    }
+                    //插入税收分成表数据
                     if ($insertIncomeData) {
                         $incomelogModel->addAll($insertIncomeData);
                     }
@@ -129,25 +149,26 @@ class GetBillList extends Command
                             $proxyModel->updateByWhere(
                                 ['code' => $v['proxy_id']],
                                 [
-                                    'balance'   => Db::raw('balance+' . tax_change_balance($allTax * $v['percent'] / 100)),
-                                    'historyin' => Db::raw('historyin+' . tax_change_balance($allTax * $v['percent'] / 100)),
+                                    'balance'   => Db::raw('balance+' . change_to_yuan($allTax * $v['percent'] / 100, 2)),
+                                    'historyin' => Db::raw('historyin+' . change_to_yuan($allTax * $v['percent'] / 100, 2)),
                                 ]
                             );
-                            save_log('apidata/getBillList', "proxyId:{$v['proxy_id']},addmoney:" . tax_change_balance($allTax * $v['percent'] / 100) . ".");
+                            save_log('apidata/getBillList', "proxyId:{$v['proxy_id']},addmoney:" . change_to_yuan($allTax * $v['percent'] / 100, 2) . ".");
                         } else { //上级代理
                             $getPercent = intval($v['percent'] - $levelData[$k - 1]['percent']);
                             $proxyModel->updateByWhere(
                                 ['code' => $v['proxy_id']],
                                 [
-                                    'balance'   => Db::raw('balance+' . tax_change_balance($allTax * $getPercent / 100)),
-                                    'historyin' => Db::raw('historyin+' . tax_change_balance($allTax * $getPercent / 100)),
+                                    'balance'   => Db::raw('balance+' . change_to_yuan($allTax * $getPercent / 100, 2)),
+                                    'historyin' => Db::raw('historyin+' . change_to_yuan($allTax * $getPercent / 100, 2)),
                                 ]
                             );
-                            save_log('apidata/getBillList', "proxyId:{$v['proxy_id']},addmoney:" . tax_change_balance($allTax * $v['percent'] / 100) . ".");
+                            save_log('apidata/getBillList', "proxyId:{$v['proxy_id']},addmoney:" . change_to_yuan($allTax * $v['percent'] / 100, 2) . ".");
                         }
                     }
-                    save_log('apidata/getBillList', "proxyId:{$proxy},recordnum:" . count($info->data) . ",handlemsg:insertsuccess");
+
                     Db::commit();
+                    save_log('apidata/getBillList', "proxyId:{$proxy},recordnum:" . count($info->data) . ",handlemsg:insertsuccess");
                 } catch (\Exception $e) {
                     Db::rollback();
                     save_log('apidata/getBillList', "proxyId:{$proxy},handlemsg:{$e->getMessage()}");

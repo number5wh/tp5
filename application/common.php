@@ -165,18 +165,11 @@ if (!function_exists('generate_percent')) {
     }
 }
 
-//将tax转化为元单位(incomelog用)
-if (!function_exists('tax_change_incomelog')) {
-    function tax_change_incomelog($tax)
+//转化为元单位
+if (!function_exists('change_to_yuan')) {
+    function change_to_yuan($money, $decimals)
     {
-        return round($tax/1000, 4);
-    }
-}
-
-//将tax转化为元单位(balance用)
-if (!function_exists('tax_change_balance')) {
-    function tax_change_balance($tax)
-    {
-        return round($tax/1000, 2);
+        //money厘  decimals 保留几位小数
+        return round($money/1000, $decimals);
     }
 }
