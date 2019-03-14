@@ -86,16 +86,14 @@ class GetBillList extends Command
                     'userid'     => $data->userid,
                     'game'       => '',
                     'tax'        => $data->tax,
-                    'inserttime' => $insertTime,
-                    'time'      => $data->date,
-                    'createday' => $today
+                    'date'      => $data->date,
                 ];
                 $insertOrderData = [
                     'proxy_id' => $proxy,
                     'userid'   => $data->userid,
                     'game'     => '',
                     'total_tax' => change_to_yuan($data->tax, 4),
-                    'time'      => $data->date,
+                    'date'      => $data->date,
                     'createday' => $today,
                     'createtime' => $insertTime,
                 ];
@@ -106,7 +104,7 @@ class GetBillList extends Command
                             'proxy_id'   => $lv['proxy_id'],
                             'totaltax'   => $totalTax,
                             'changmoney' => change_to_yuan($data->tax * $lv['percent'] / 100, 4),
-                            'time'       => $data->date,
+                            'date'       => $data->date,
                             'createtime' => $timestamp,
                             'createday'  => $today,
                             'descript'   => $proxy . '代理的玩家的税收分成，总金额' . change_to_yuan($data->tax * $lv['percent'] / 100, 4)
@@ -118,7 +116,7 @@ class GetBillList extends Command
                                 'proxy_id'   => $lv['proxy_id'],
                                 'totaltax'   => $totalTax,
                                 'changmoney' => change_to_yuan($data->tax * $getPercent / 100, 4),
-                                'time'       => $data->date,
+                                'date'       => $data->date,
                                 'createtime' => $timestamp,
                                 'createday'  => $today,
                                 'descript'   => $proxy . '给' . $level . '级代理税收分成，总金额' . change_to_yuan($data->tax * $getPercent / 100, 4)
