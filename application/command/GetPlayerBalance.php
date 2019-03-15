@@ -36,13 +36,13 @@ class GetPlayerBalance extends Command
                 $updateTime = date('YmdHis');
                 foreach ($info->data as $data) {
                     if ($playerModel->getCount(['userid' => $data->userid])) {
-                        $playerModel->updateByWhere(['userid' => $data->userid], ['leftmoney' => round($data->balance,2), 'updatemoney' => $updateTime]);
+                        $playerModel->updateByWhere(['userid' => $data->userid], ['leftmoney' => change_to_yuan($data->balance,2), 'updatemoney' => $updateTime]);
                         $updateNum++;
                     }
                 }
             }
         }
 
-        save_log('apidata/getPlayerBalance', "end at:" . date('Y-m-d H:i:s').',updatenum:'.$updateNum);
+        save_log('apidata/getPlayerBalance', "end at:" . date('Y-m-d H:i:s').',totalnum:'.count($info->data).',updatenum:'.$updateNum);
     }
 }
