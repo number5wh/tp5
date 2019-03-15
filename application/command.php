@@ -14,4 +14,5 @@ return [
     'app\command\GetBillList',
     'app\command\GetRechargeInfo',
     'app\command\GetUsergame',
+    'app\command\GetPlayerBalance',
 ];
