@@ -38,12 +38,12 @@ class GetBillList extends Command
             //循环获取账单
             $info = PlayerData::getBillList($proxy);
             if ($info->code != 0) {
-                $output->writeln('code:' . $info->code . ',msg:' . $info->message);
+                $output->writeln('proxy'.$proxy.',code:' . $info->code . ',msg:' . $info->message);
                 continue;
             }
             if (!$info->data) {
                 save_log('apidata/getBillList', "proxyId:{$proxy},handlemsg:nodata");
-                $output->writeln('code:' . $info->code . ',msg:' . $info->message . 'data:nodata');
+                //$output->writeln('code:' . $info->code . ',msg:' . $info->message . 'data:nodata');
                 continue;
             }
 

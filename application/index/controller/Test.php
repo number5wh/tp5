@@ -23,9 +23,11 @@ class Test extends Controller
     {
 
 
-        $info = PlayerData::getUserAccount();
+        $info = PlayerData::getUsergame('WZ0000003');
         //$info = Ostime::getOsTime();
 
+//        $info = intval(date('i'));
+//        $info = intval('09');
         var_dump($info);
         die;
     }

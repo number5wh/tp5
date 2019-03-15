@@ -25,14 +25,19 @@ class GetRechargeInfo extends Command
     protected function execute(Input $input, Output $output)
     {
         save_log('apidata/getRechargeInfo', "start at:" . date('Y-m-d H:i:s'));
-        $today = date('Ymd');
+        if (intval(date('G')) == 0 && intval(date('i')) < 10) {//前10分钟取前一天的
+            $today = date('Ymd', strtotime('-1 day'));
+        } else {
+            $today = date('Ymd');
+        }
+
         $info = PlayerData::getRechargeInfo($today);
         if ($info->code != 0) {
             $output->writeln('code:'.$info->code.',msg:'.$info->message);
         } else {
             if (!$info->data) {
                 save_log('apidata/getRechargeInfo', "handlemsg:nodata");
-                $output->writeln('code:'.$info->code.',msg:'.$info->message.'data:nodata');
+                //$output->writeln('code:'.$info->code.',msg:'.$info->message.'data:nodata');
             } else {
                 $thirdpaytimeModel = new Thirdpaytime();
                 $paytimeModel = new Paytime();

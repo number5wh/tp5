@@ -36,12 +36,12 @@ class GetUsergame extends Command
             //循环获取游戏数据
             $info = PlayerData::getUsergame($proxy);
             if ($info->code != 0) {
-                $output->writeln('code:' . $info->code . ',msg:' . $info->message);
+                $output->writeln('proxy'.$proxy.',code:' . $info->code . ',msg:' . $info->message);
                 continue;
             }
             if (!$info->data) {
                 save_log('apidata/getUsergame', "proxyId:{$proxy},handlemsg:nodata");
-                $output->writeln('code:' . $info->code . ',msg:' . $info->message . 'data:nodata');
+                //$output->writeln('code:' . $info->code . ',msg:' . $info->message . 'data:nodata');
                 continue;
             }
 
@@ -64,7 +64,7 @@ class GetUsergame extends Command
                     $insertData[] = [
                         'userid' => $data->userid,
                         'addtime' => $data->addtime,
-                        'changemoney' => $data->changemoney,
+                        'changemoney' => change_to_yuan($data->changemoney, 2),
                         'nickname' => $data->nickname,
                         'roomname' => $data->roomname,
                         'inserttime' => $insertTime,

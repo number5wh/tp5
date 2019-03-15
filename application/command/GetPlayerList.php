@@ -36,12 +36,12 @@ class GetPlayerList extends Command
             //循环获取各自的玩家
             $info = PlayerData::getPlayerList($proxy);
             if ($info->code != 0) {
-                $output->writeln('code:' . $info->code . ',msg:' . $info->message);
+                $output->writeln('proxy'.$proxy.',code:' . $info->code . ',msg:' . $info->message);
                 continue;
             }
             if (!$info->data) {
                 save_log('apidata/getPlayerList', "proxyId:{$proxy},handlemsg:nodata");
-                $output->writeln('code:' . $info->code . ',msg:' . $info->message . 'data:nodata');
+                //$output->writeln('code:' . $info->code . ',msg:' . $info->message . 'data:nodata');
                 continue;
             }
             $thirdplayerModel = new Thirdplayer();

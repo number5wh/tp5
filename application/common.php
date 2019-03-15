@@ -167,7 +167,7 @@ if (!function_exists('generate_percent')) {
 
 //转化为元单位
 if (!function_exists('change_to_yuan')) {
-    function change_to_yuan($money, $decimals)
+    function change_to_yuan($money, $decimals = 2)
     {
         //money厘  decimals 保留几位小数
         return round($money/1000, $decimals);
