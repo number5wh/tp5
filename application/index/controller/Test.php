@@ -23,7 +23,7 @@ class Test extends Controller
     {
 
 
-        $info = PlayerData::getRechargeInfo('20190311');
+        $info = PlayerData::getUserAccount();
         //$info = Ostime::getOsTime();
 
         var_dump($info);
