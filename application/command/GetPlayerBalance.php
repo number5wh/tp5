@@ -36,7 +36,7 @@ class GetPlayerBalance extends Command
                 $updateTime = date('YmdHis');
                 foreach ($info->data as $data) {
                     if ($playerModel->getCount(['userid' => $data->userid])) {
-                        $playerModel->updateByWhere(['userid' => $data->userid], ['leftmoney' => $data->balance, 'updatemoney' => $updateTime]);
+                        $playerModel->updateByWhere(['userid' => $data->userid], ['leftmoney' => round($data->balance,2), 'updatemoney' => $updateTime]);
                         $updateNum++;
                     }
                 }
