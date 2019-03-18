@@ -133,7 +133,7 @@ if (!function_exists('get_proxy_code')) {
     function get_proxy_code()
     {
         $id = intval(\app\index\model\Proxy::max('id')) + 1;
-        $ret = 'WZ';
+        $ret = 'FC';
         if ($id < 10) {
             $ret .= '000000'.$id;
         } elseif ($id < 100) {
