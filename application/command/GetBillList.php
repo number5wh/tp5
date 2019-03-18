@@ -3,10 +3,12 @@
  * 获取税收账单(一天读取一次)
  * @Todo 疑问：先插入第三方表再去第三方表读数据处理，还是整个一起处理？
  */
+
 namespace app\command;
 
 use apiData\PlayerData;
 use app\index\model\Incomelog;
+use app\index\model\Planlog;
 use app\index\model\Playerorder;
 use app\index\model\Proxy;
 use app\index\model\Teamlevel;
@@ -28,9 +30,25 @@ class GetBillList extends Command
 
     protected function execute(Input $input, Output $output)
     {
+        $planlogModel = new Planlog();
+        $today        = date('Ymd');
+        //查询当天是否已经执行过
+        if ($planlogModel->getCount(['plan' => 'getBillList', 'day' => $today])) {
+            $output->writeln('has run before!');
+            exit;
+        }
+
+        $planId = $planlogModel->add(
+            [
+                'plan'       => 'getBillList',
+                'day'        => $today,
+                'status'     => 0,
+                'inserttime' => date('Y-m-d H:i:s')
+            ]
+        );
         save_log('apidata/getBillList', "start at:" . date('Y-m-d H:i:s'));
         //获取代理列表
-        $today      = date('Ymd');
+
         $proxyModel = new Proxy();
         $proxyList  = $proxyModel->getListAll([], 'code');
         $proxyList  = array_column($proxyList, 'code');
@@ -38,11 +56,11 @@ class GetBillList extends Command
             //循环获取账单
             $info = PlayerData::getBillList($proxy);
             if ($info->code != 0) {
-                $output->writeln('proxy'.$proxy.',code:' . $info->code . ',msg:' . $info->message);
+                $output->writeln('proxy' . $proxy . ',code:' . $info->code . ',msg:' . $info->message);
                 continue;
             }
             if (!$info->data) {
-                save_log('apidata/getBillList', "proxyId:{$proxy},handlemsg:nodata");
+                //save_log('apidata/getBillList', "proxyId:{$proxy},handlemsg:nodata");
                 //$output->writeln('code:' . $info->code . ',msg:' . $info->message . 'data:nodata');
                 continue;
             }
@@ -72,11 +90,12 @@ class GetBillList extends Command
             }
 
 
-            $insertTime            = date('YmdHis');
-            $timestamp             = time();
-            $thirdPlayerOrderModel = new ThirdPlayerOrder();
+            $insertTime = date('YmdHis');
+            $timestamp  = time();
+
             $incomelogModel        = new Incomelog();
             $playerorderModel      = new Playerorder();
+            $thirdPlayerOrderModel = new ThirdPlayerOrder();
 
             //计算总税收。用于更新账户余额和历史金额
             $allTax = 0;
@@ -84,18 +103,18 @@ class GetBillList extends Command
             foreach ($info->data as $data) {
                 $allTax            += $data->tax;
                 $insertThirdData[] = [
+                    'userid' => $data->userid,
+                    'game'   => '',
+                    'tax'    => $data->tax,
+                    'date'   => $data->date,
+                ];
+                $insertOrderData   = [
+                    'proxy_id'   => $proxy,
                     'userid'     => $data->userid,
                     'game'       => '',
-                    'tax'        => $data->tax,
-                    'date'      => $data->date,
-                ];
-                $insertOrderData = [
-                    'proxy_id' => $proxy,
-                    'userid'   => $data->userid,
-                    'game'     => '',
-                    'total_tax' => change_to_yuan($data->tax, 4),
-                    'date'      => $data->date,
-                    'createday' => $today,
+                    'total_tax'  => change_to_yuan($data->tax, 4),
+                    'date'       => $data->date,
+                    'createday'  => $today,
                     'createtime' => $insertTime,
                 ];
                 foreach ($levelData as $level => $lv) {
@@ -175,6 +194,8 @@ class GetBillList extends Command
                 }
             }
         }
+
+        $planlogModel->updateById($planId, ['updatetime' => date('Y-m-d H:i:s'), 'status' => 1]);
         save_log('apidata/getPlayerList', "end at:" . date('Y-m-d H:i:s'));
     }
 

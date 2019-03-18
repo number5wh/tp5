@@ -113,14 +113,12 @@ class Account extends Controller
         foreach ($playerList as &$player) {
             $player['total_tax'] = $player['totalfee'] = 0;
             foreach ($totalFee as $fee) {
-                $player['totalfee'] = 0;
                 if ($fee['userid'] == $player['userid']) {
                     $player['totalfee'] = $fee['totalfee'];
                     break;
                 }
             }
             foreach ($totalTax as $tax) {
-                $player['total_tax'] = 0;
                 if ($tax['userid'] == $player['userid']) {
                     $player['total_tax'] = $tax['total_tax'];
                     break;
