@@ -6,9 +6,8 @@
  * Time: 9:12
  */
 namespace app\index\model;
-use think\Db;
-use think\Model;
-class Sms extends Model
+
+class Sms extends CommonModel
 {
     protected $table = 'sms';
 }

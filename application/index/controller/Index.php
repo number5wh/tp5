@@ -16,6 +16,7 @@ class Index extends Controller
     public function layout()
     {
         $this->assign('username', session('username'));
+        $this->assign('addproxy', session('addproxy'));
         return view('/layout');
     }
 
@@ -70,7 +71,7 @@ class Index extends Controller
 
         $date = $res = [];
         for ($i = $beginDay; $i<=$endDay; $i++) {
-            $date[] = $i;
+            $date[] = intval($i);
             $res[$i] = 0;
             foreach ($info as $v) {
                 if ($v['createday'] == $i) {

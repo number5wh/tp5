@@ -94,9 +94,11 @@
                 <dd data-name="withdraw-account">
                   <a lay-href="{:url('withdraw.set')}">结算账号</a>
                 </dd>
+
                 <dd data-name="withdraw-get">
                   <a lay-href="{:url('withdraw.apply')}">提现申请</a>
                 </dd>
+
               </dl>
             </li>
             <li data-name="detail" class="layui-nav-item">
@@ -121,9 +123,11 @@
                 <dd data-name="workorder">
                   <a lay-href="{:url('account.playerList')}">玩家列表</a>
                 </dd>
-                <dd>
-                  <a lay-href="{:url('account.addProxy')}">新增代理</a>
-                </dd>
+                  {if $addproxy == 1}
+                    <dd>
+                      <a lay-href="{:url('account.addProxy')}">新增代理</a>
+                    </dd>
+                  {/if}
               </dl>
             </li>
             <!--<li data-name="user" class="layui-nav-item">-->
