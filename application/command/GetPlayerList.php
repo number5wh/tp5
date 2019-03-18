@@ -77,7 +77,7 @@ class GetPlayerList extends Command
                         //'ismobile' => $data->ismobile,
                         'proxy_id'  => $proxy, //是$proxy，记得改回来
                         'nickname'  => $data->nickname,
-                        'balance'   => change_to_yuan($data->balance),
+                        'leftmoney'   => change_to_yuan($data->balance),
                         'addtime'   => $insertTime
                     ];
                     $thirdnum++;

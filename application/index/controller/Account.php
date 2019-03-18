@@ -8,6 +8,7 @@
 
 namespace app\index\controller;
 
+use apiData\PlayerData;
 use app\index\model\Playerorder;
 use app\index\model\Proxy;
 use think\Controller;
@@ -27,18 +28,24 @@ class Account extends Controller
     }
 
     /**
-     * @todo 玩家的房间等信息还没有
+     * 获取在线玩家信息
      * @return \think\response\Json
      */
     public function playerListData()
     {
-
         $data = [
             'code'  => 0,
             'msg'   => '',
-            'count' => 0,
+            'count' => 20,  //先设置20
             'data'  => []
         ];
+        $onlineList = PlayerData::getOnlineList(session('code'));
+        var_dump(session('code'), $onlineList);
+        die;
+        if ($onlineList->code != 0) {
+            return json($data);
+        }
+
 
         $page        = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
         $limit       = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
@@ -71,6 +78,7 @@ class Account extends Controller
         $userId      = strval($this->request->userid);
         $page        = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
         $limit       = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
+
         $playerModel = new Player();
         $where       = [['proxy_id', '=', session('code')]];
         if ($userId) {

@@ -16,6 +16,7 @@ class Index extends Controller
     public function layout()
     {
         $this->assign('username', session('username'));
+        $this->assign('proxyid', session('code'));
         $this->assign('addproxy', session('addproxy'));
         return view('/layout');
     }
