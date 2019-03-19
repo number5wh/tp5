@@ -23,12 +23,12 @@ class Test extends Controller
     {
 
 
-        $info = PlayerData::getPlayerList('FC0000004');
+        $info = PlayerData::getOnlineList('FC0000004');
         //$info = Ostime::getOsTime();
 
 //        $info = intval(date('i'));
 //        $info = intval('09');
-        var_dump(($info->data));
+        var_dump($info);
         die;
     }
 
