@@ -48,10 +48,10 @@ Route::group('user', function(){
 Route::group('account', function(){
     Route::get('playerList', 'account/playerList')->name('account.playerList');
     Route::get('playerListData', 'account/playerListData')->name('account.playerListData');
-    Route::post('searchPlayer', 'account/searchPlayer')->name('account.searchPlayer');
+//    Route::post('searchPlayer', 'account/searchPlayer')->name('account.searchPlayer');
     Route::get('proxyList', 'account/proxyList')->name('account.proxyList');
     Route::get('proxyListData', 'account/proxyListData')->name('account.proxyListData');
-    Route::post('searchProxy', 'account/searchProxy')->name('account.searchProxy');
+//    Route::post('searchProxy', 'account/searchProxy')->name('account.searchProxy');
     Route::get('addProxy', 'account/addProxy')->name('account.addProxy');
     Route::post('doAddProxy', 'account/doAddProxy')->name('account.doAddProxy');
     Route::get('getPercent', 'account/getPercent')->name('account.getPercent');

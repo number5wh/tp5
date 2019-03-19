@@ -72,16 +72,41 @@
           
           <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
             <li data-name="home" class="layui-nav-item layui-nav-itemed">
-              <a href="javascript:;" lay-tips="主页" lay-direction="2">
+              <a href="javascript:;" lay-href="{:url('home')}" lay-tips="主页" lay-direction="2">
                 <i class="layui-icon layui-icon-home"></i>
                 <cite>主页</cite>
               </a>
+            </li>
+            <li data-name="account" class="layui-nav-item">
+              <a href="javascript:;" lay-tips="账号管理" lay-direction="2">
+                <i class="layui-icon layui-icon-list"></i>
+                <cite>账号管理</cite>
+              </a>
               <dl class="layui-nav-child">
-                <dd data-name="console" class="layui-this">
-                  <a lay-href="{:url('home')}">主页</a>
+
+                <dd>
+                  <a lay-href="{:url('account.proxyList')}">代理列表</a>
                 </dd>
+                <dd data-name="workorder">
+                  <a lay-href="{:url('account.playerList')}">玩家列表</a>
+                </dd>
+                {if $addproxy == 1}
+                <dd>
+                  <a lay-href="{:url('account.addProxy')}">新增代理</a>
+                </dd>
+                {/if}
               </dl>
             </li>
+            <li data-name="detail" class="layui-nav-item">
+              <a href="javascript:;" lay-tips="明细查询" lay-direction="2">
+                <i class="layui-icon layui-icon-list"></i>
+                <cite>明细查询</cite>
+              </a>
+              <dl class="layui-nav-child">
+                <dd><a lay-href="{:url('detail.index')}">玩家游戏明细</a></dd>
+              </dl>
+            </li>
+
             <li data-name="withdraw" class="layui-nav-item">
               <a href="javascript:;" lay-tips="提现管理" lay-direction="2">
                 <i class="layui-icon layui-icon-list"></i>
@@ -101,46 +126,6 @@
 
               </dl>
             </li>
-            <li data-name="detail" class="layui-nav-item">
-              <a href="javascript:;" lay-tips="明细查询" lay-direction="2">
-                <i class="layui-icon layui-icon-list"></i>
-                <cite>明细查询</cite>
-              </a>
-              <dl class="layui-nav-child">
-                <dd><a lay-href="{:url('detail.index')}">玩家游戏明细</a></dd>
-              </dl>
-            </li>
-            <li data-name="account" class="layui-nav-item">
-              <a href="javascript:;" lay-tips="账号管理" lay-direction="2">
-                <i class="layui-icon layui-icon-list"></i>
-                <cite>账号管理</cite>
-              </a>
-              <dl class="layui-nav-child">
-
-                <dd>
-                  <a lay-href="{:url('account.proxyList')}">代理列表</a>
-                </dd>
-                <dd data-name="workorder">
-                  <a lay-href="{:url('account.playerList')}">玩家列表</a>
-                </dd>
-                  {if $addproxy == 1}
-                    <dd>
-                      <a lay-href="{:url('account.addProxy')}">新增代理</a>
-                    </dd>
-                  {/if}
-              </dl>
-            </li>
-            <!--<li data-name="user" class="layui-nav-item">-->
-              <!--<a href="javascript:;" lay-tips="用户管理" lay-direction="2">-->
-                <!--<i class="layui-icon layui-icon-list"></i>-->
-                <!--<cite>用户管理</cite>-->
-              <!--</a>-->
-              <!--<dl class="layui-nav-child">-->
-                <!--<dd>-->
-                  <!--<a lay-href="{:url('user.list')}">用户列表</a>-->
-                <!--</dd>-->
-              <!--</dl>-->
-            <!--</li>-->
             <li data-name="set" class="layui-nav-item">
               <a href="javascript:;" lay-tips="安全设置" lay-direction="2">
                 <i class="layui-icon layui-icon-list"></i>

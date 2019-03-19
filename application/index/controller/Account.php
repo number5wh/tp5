@@ -44,9 +44,15 @@ class Account extends Controller
             return json($data);
         }
         $playerList = [];
+        $num = 1;
         foreach ($onlineList->data as $v) {
-            $playerList[] = array($v);
+            $v->balance = change_to_yuan($v->balance);
+            $v = json_decode(json_encode($v),true);
+            $v['id'] = $num;
+            $playerList[] = $v;
         }
+
+        $userId      = isset($this->request->userid) ? strval($this->request->userid) : '';
 
 //        $page        = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
 //        $limit       = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
@@ -63,57 +69,18 @@ class Account extends Controller
 //            //获取总充值和总业绩数据
 //            $this->handlePlayer($playerList);
 //        }
-        $this->handlePlayer($playerList);
-        $data['data'] = $playerList;
-        return json($data);
-    }
 
-    //按名称搜索玩家
-    public function searchPlayer()
-    {
-        $data        = [
-            'code'  => 0,
-            'msg'   => '',
-            'count' => 20,
-            'data'  => []
-        ];
-        $userId      = strval($this->request->userid);
-//        $page        = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
-//        $limit       = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
-//
-//        $playerModel = new Player();
-//        $where       = [['proxy_id', '=', session('code')]];
-//        if ($userId) {
-//            $where[] = ['userid', 'like', "%$userId%"];
-//        }
-//        $data['count'] = $playerModel->getCount($where);
-//        if ($data['count'] <= 0) {
-//            return json($data);
-//        }
-//        $playerList = $playerModel->getList($where, $page, $limit);
-
-        $onlineList = PlayerData::getOnlineList(session('code'));
-//        var_dump(session('code'), $onlineList);
-//        die;
-        if ($onlineList->code != 0 || !$onlineList->data) {
-            return json($data);
-        }
-        $playerList = [];
-        foreach ($onlineList->data as $v) {
-            $playerList[] = array($v);
-        }
-//        if ($playerList) {
-//            //获取总充值和总业绩数据
-//            $this->handlePlayer($playerList);
-//        }
-        //获取总充值和总业绩数据
         $this->handlePlayer($playerList);
         $res = [];
-        foreach ($playerList as $p) {
-            if ($p['userid'] == $userId) {
-                $res[] = $userId;
-                break;
+        if ($userId) {
+            foreach ($playerList as $p) {
+                if ($p['userid'] == $userId) {
+                    $res[] = $p;
+                    break;
+                }
             }
+        } else {
+            $res = $playerList;
         }
         $data['data'] = $res;
         return json($data);
@@ -172,35 +139,7 @@ class Account extends Controller
             'count' => 0,
             'data'  => []
         ];
-        $page           = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
-        $limit          = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
-        $teamlevelModel = new Teamlevel();
-        //获取总数
-        $count         = $teamlevelModel->getCount(['parent_id' => session('code')]);
-        $data['count'] = $count;
-        if (!$count) {
-            return json($data);
-        }
-
-        //获取下级代理列表
-        $proxyList = $teamlevelModel->getList(['parent_id' => session('code')], $page, $limit);
-        if ($proxyList) {
-            $this->handleProxy($proxyList);
-        }
-        $data['data'] = $proxyList;
-        return json($data);
-    }
-
-    //按名称搜索代理
-    public function searchProxy()
-    {
-        //检查参数
-        $data           = [
-            'code' => 0,
-            'msg'  => '',
-            'data' => []
-        ];
-        $username       = strval($this->request->username);
+        $username       = isset($this->request->username) ? strval($this->request->username) : '';
         $page           = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
         $limit          = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
         $teamlevelModel = new Teamlevel();
@@ -210,10 +149,12 @@ class Account extends Controller
         }
         //获取总数
         $count         = $teamlevelModel->getCount($where);
-        $data['count'] = $count;
+        $data['count'] = 500;
         if (!$count) {
             return json($data);
         }
+
+        //获取下级代理列表
         $proxyList = $teamlevelModel->getList($where, $page, $limit);
         if ($proxyList) {
             $this->handleProxy($proxyList);
