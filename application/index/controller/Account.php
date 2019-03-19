@@ -46,10 +46,11 @@ class Account extends Controller
         $playerList = [];
         $num = 1;
         foreach ($onlineList->data as $v) {
-            $v->balance = change_to_yuan($v->balance);
+//            $v->balance = change_to_yuan($v->balance);
             $v = json_decode(json_encode($v),true);
             $v['id'] = $num;
             $playerList[] = $v;
+            $num++;
         }
 
         $userId      = isset($this->request->userid) ? strval($this->request->userid) : '';
