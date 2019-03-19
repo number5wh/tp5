@@ -71,7 +71,7 @@ class GetBillList extends Command
             $selfPercent  = $proxyModel->getValue(['code' => $proxy], 'percent');
             $levelData[0] = [
                 'proxy_id'  => $proxy,
-                'parent_id' => '',
+                'parent_id' => $proxy,
                 'level'     => 0,
                 'percent'   => $selfPercent
             ];
@@ -108,7 +108,7 @@ class GetBillList extends Command
                     'tax'    => $data->tax,
                     'date'   => $data->date,
                 ];
-                $insertOrderData   = [
+                $insertOrderData[]   = [
                     'proxy_id'   => $proxy,
                     'userid'     => $data->userid,
                     'game'       => '',
@@ -119,8 +119,9 @@ class GetBillList extends Command
                 ];
                 foreach ($levelData as $level => $lv) {
                     $totalTax = change_to_yuan($data->tax, 4);
-                    if ($level == 0) { //当前运营商
+                    if ($lv['level'] == 0) { //当前运营商
                         $insertIncomeData[] = [
+                            'from_id'    => $proxy,
                             'proxy_id'   => $lv['proxy_id'],
                             'totaltax'   => $totalTax,
                             'changmoney' => change_to_yuan($data->tax * $lv['percent'] / 100, 4),
@@ -133,7 +134,8 @@ class GetBillList extends Command
                         $getPercent = intval($lv['percent'] - $levelData[$level - 1]['percent']);
                         if ($getPercent > 0) {
                             $insertIncomeData[] = [
-                                'proxy_id'   => $lv['proxy_id'],
+                                'from_id'    => $proxy,
+                                'proxy_id'   => $lv['parent_id'],
                                 'totaltax'   => $totalTax,
                                 'changmoney' => change_to_yuan($data->tax * $getPercent / 100, 4),
                                 'date'       => $data->date,
@@ -146,7 +148,7 @@ class GetBillList extends Command
                 }
             }
 
-            if ($insertIncomeData || $insertThirdData) {
+            if ($insertIncomeData || $insertThirdData || $insertOrderData) {
                 Db::startTrans();
                 try {
                     //插入第三方表数据
@@ -175,7 +177,7 @@ class GetBillList extends Command
                         } else { //上级代理
                             $getPercent = intval($v['percent'] - $levelData[$k - 1]['percent']);
                             $proxyModel->updateByWhere(
-                                ['code' => $v['proxy_id']],
+                                ['code' => $v['parent_id']],
                                 [
                                     'balance'   => Db::raw('balance+' . change_to_yuan($allTax * $getPercent / 100, 2)),
                                     'historyin' => Db::raw('historyin+' . change_to_yuan($allTax * $getPercent / 100, 2)),

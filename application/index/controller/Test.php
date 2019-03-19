@@ -23,7 +23,7 @@ class Test extends Controller
     {
 
 
-        $info = PlayerData::getRechargeInfo('20190319');
+        $info = PlayerData::getBillList('FC0000004');
         //$info = Ostime::getOsTime();
 
 //        $info = intval(date('i'));

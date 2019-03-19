@@ -58,45 +58,51 @@ class GetUsergame extends Command
             }
 
             $insertThirdData      = $insertData = [];
-            $addNum               = 0;
+            $addNum  = $updateNum = 0;
             $thirdplayergameModel = new Thirdplayergame();
             $playergameModel      = new Playergame();
 
-            foreach ($info->data as $data) {
-                if (!$thirdplayergameModel->getCount(['userid' => $data->userid, 'addtime' => $data->addtime, 'changemoney' => $data->changemoney])) {
-                    $addNum++;
-                    $insertThirdData[] = [
-                        'userid'      => $data->userid,
-                        'addtime'     => $data->addtime,
-                        'changemoney' => $data->changemoney,
-                        'nickname'    => $data->nickname,
-                        'roomname'    => $data->roomname,
-                        'inserttime'  => $insertTime
-                    ];
-                    $insertData[]      = [
-                        'userid'      => $data->userid,
-                        'addtime'     => $data->addtime,
-                        'changemoney' => change_to_yuan($data->changemoney),
-                        'nickname'    => $data->nickname,
-                        'roomname'    => $data->roomname,
-                        'inserttime'  => $insertTime,
-                        'proxy_id'    => $proxy
-                    ];
-                }
-            }
+            Db::startTrans();
 
-            if ($addNum > 0) {
-                Db::startTrans();
-                try {
-                    $thirdplayergameModel->addAll($insertThirdData);
-                    $playergameModel->addAll($insertData);
-                    Db::commit();
-                    save_log('apidata/getUsergame', "recordnum:" . count($info->data) . ",addnum:" . $addNum . "handlemsg:insertsuccess");
-                } catch (\Exception $e) {
-                    Db::rollback();
-                    save_log('apidata/getUsergame', "handlemsg:" . $e->getMessage());
-                    $output->writeln('code:500,msg:' . $e->getMessage() . 'data:insertfail');
+            try {
+                foreach ($info->data as $data) {
+                    $row = $thirdplayergameModel->getRow(['userid' => $data->userid, 'roomname' => $data->roomname]);
+                    if (!$row) {
+                        $addNum++;
+                        $thirdplayergameModel->add([
+                            'userid'      => $data->userid,
+                            'addtime'     => $data->addtime,
+                            'changemoney' => $data->changemoney,
+                            'nickname'    => $data->nickname,
+                            'roomname'    => $data->roomname,
+                            'inserttime'  => $insertTime,
+                            'updatetime'  => $insertTime
+                        ]);
+                        $playergameModel->add([
+                            'userid'      => $data->userid,
+                            'addtime'     => $data->addtime,
+                            'changemoney' => change_to_yuan($data->changemoney),
+                            'nickname'    => $data->nickname,
+                            'roomname'    => $data->roomname,
+                            'inserttime'  => $insertTime,
+                            'proxy_id'    => $proxy,
+                            'updatetime'  => $insertTime
+                        ]);
+
+                    } else {
+                        if ($row['changemoney'] != $data->changemoney) {
+                            $updateNum++;
+                            $thirdplayergameModel->updateById($row['id'], ['changemoney' => $data->changemoney, 'updatetime' => $insertTime]);
+                            $playergameModel->updateByWhere(['userid' => $data->userid,'roomname' => $data->roomname], ['changemoney' => change_to_yuan($data->changemoney),'updatetime'  => $insertTime]);
+                        }
+                    }
                 }
+                Db::commit();
+                save_log('apidata/getUsergame', "proxyid:".$proxy.",recordnum:" . count($info->data) . ",addnum:" . $addNum ."updatenum:".$updateNum. "handlemsg:insertsuccess");
+            } catch(\Exception $e) {
+                Db::rollback();
+                save_log('apidata/getUsergame', "proxyid:".$proxy."handlemsg:" . $e->getMessage());
+                $output->writeln('code:500,msg:' . $e->getMessage() . 'data:insertfail');
             }
         }
         $planlogModel->updateById($planId, ['updatetime' => date('Y-m-d H:i:s'), 'status' => 1]);
