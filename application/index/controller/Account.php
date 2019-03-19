@@ -40,28 +40,30 @@ class Account extends Controller
             'data'  => []
         ];
         $onlineList = PlayerData::getOnlineList(session('code'));
-        var_dump(session('code'), $onlineList);
-        die;
-        if ($onlineList->code != 0) {
+        if ($onlineList->code != 0 || !$onlineList->data) {
             return json($data);
         }
-
-
-        $page        = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
-        $limit       = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
-        $playerModel = new Player();
-        //总数
-        $where         = ['proxy_id' => session('code')];
-        $data['count'] = $playerModel->getCount($where);
-        if ($data['count'] <= 0) {
-            return json($data);
+        $playerList = [];
+        foreach ($onlineList->data as $v) {
+            $playerList[] = array($v);
         }
-        //获取所属玩家
-        $playerList = $playerModel->getList($where, $page, $limit);
-        if ($playerList) {
-            //获取总充值和总业绩数据
-            $this->handlePlayer($playerList);
-        }
+
+//        $page        = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
+//        $limit       = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
+//        $playerModel = new Player();
+//        //总数
+//        $where         = ['proxy_id' => session('code')];
+//        $data['count'] = $playerModel->getCount($where);
+//        if ($data['count'] <= 0) {
+//            return json($data);
+//        }
+//        //获取所属玩家
+//        $playerList = $playerModel->getList($where, $page, $limit);
+//        if ($playerList) {
+//            //获取总充值和总业绩数据
+//            $this->handlePlayer($playerList);
+//        }
+        $this->handlePlayer($playerList);
         $data['data'] = $playerList;
         return json($data);
     }
@@ -72,28 +74,48 @@ class Account extends Controller
         $data        = [
             'code'  => 0,
             'msg'   => '',
-            'count' => 0,
+            'count' => 20,
             'data'  => []
         ];
         $userId      = strval($this->request->userid);
-        $page        = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
-        $limit       = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
+//        $page        = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
+//        $limit       = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
+//
+//        $playerModel = new Player();
+//        $where       = [['proxy_id', '=', session('code')]];
+//        if ($userId) {
+//            $where[] = ['userid', 'like', "%$userId%"];
+//        }
+//        $data['count'] = $playerModel->getCount($where);
+//        if ($data['count'] <= 0) {
+//            return json($data);
+//        }
+//        $playerList = $playerModel->getList($where, $page, $limit);
 
-        $playerModel = new Player();
-        $where       = [['proxy_id', '=', session('code')]];
-        if ($userId) {
-            $where[] = ['userid', 'like', "%$userId%"];
-        }
-        $data['count'] = $playerModel->getCount($where);
-        if ($data['count'] <= 0) {
+        $onlineList = PlayerData::getOnlineList(session('code'));
+//        var_dump(session('code'), $onlineList);
+//        die;
+        if ($onlineList->code != 0 || !$onlineList->data) {
             return json($data);
         }
-        $playerList = $playerModel->getList($where, $page, $limit);
-        if ($playerList) {
-            //获取总充值和总业绩数据
-            $this->handlePlayer($playerList);
+        $playerList = [];
+        foreach ($onlineList->data as $v) {
+            $playerList[] = array($v);
         }
-        $data['data'] = $playerList;
+//        if ($playerList) {
+//            //获取总充值和总业绩数据
+//            $this->handlePlayer($playerList);
+//        }
+        //获取总充值和总业绩数据
+        $this->handlePlayer($playerList);
+        $res = [];
+        foreach ($playerList as $p) {
+            if ($p['userid'] == $userId) {
+                $res[] = $userId;
+                break;
+            }
+        }
+        $data['data'] = $res;
         return json($data);
     }
 
