@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50725
 File Encoding         : 65001
 
-Date: 2019-03-18 16:00:33
+Date: 2019-03-19 17:59:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -76,6 +76,7 @@ CREATE TABLE `dictionary` (
 DROP TABLE IF EXISTS `incomelog`;
 CREATE TABLE `incomelog` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_id` varchar(50) DEFAULT NULL COMMENT '玩家直接代理',
   `proxy_id` varchar(50) DEFAULT NULL,
   `typeid` int(11) DEFAULT '0',
   `totaltax` varchar(50) DEFAULT NULL,
@@ -85,7 +86,7 @@ CREATE TABLE `incomelog` (
   `createday` int(11) DEFAULT NULL COMMENT '新建日期',
   `descript` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for paytime
@@ -115,7 +116,7 @@ CREATE TABLE `planlog` (
   `status` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx` (`plan`,`day`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for player
@@ -136,7 +137,7 @@ CREATE TABLE `player` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid` (`userid`) USING BTREE,
   KEY `proxy_id` (`proxy_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for playergame
@@ -151,9 +152,10 @@ CREATE TABLE `playergame` (
   `changemoney` decimal(10,2) DEFAULT '0.00' COMMENT '输赢情况',
   `inserttime` datetime DEFAULT NULL,
   `proxy_id` varchar(100) DEFAULT NULL,
+  `updatetime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `proxy_id` (`proxy_id`) USING BTREE,
-  KEY `userid` (`userid`)
+  KEY `userid` (`userid`,`roomname`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -163,7 +165,7 @@ DROP TABLE IF EXISTS `playerorder`;
 CREATE TABLE `playerorder` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `gameid` int(11) DEFAULT NULL,
-  `proxy_id` varchar(100) DEFAULT NULL,
+  `proxy_id` varchar(100) DEFAULT NULL COMMENT '分成代理',
   `userid` varchar(30) DEFAULT NULL,
   `game` varchar(100) DEFAULT NULL,
   `total_tax` decimal(18,2) DEFAULT '0.00',
@@ -172,7 +174,7 @@ CREATE TABLE `playerorder` (
   `createtime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index1` (`proxy_id`,`createtime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='税收获取';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='税收获取';
 
 -- ----------------------------
 -- Table structure for proxy
@@ -213,7 +215,7 @@ CREATE TABLE `proxy` (
   PRIMARY KEY (`id`),
   KEY `code` (`code`) USING BTREE,
   KEY `parent` (`parent_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for teamlevel
@@ -226,7 +228,7 @@ CREATE TABLE `teamlevel` (
   `parent_id` varchar(50) DEFAULT NULL COMMENT '上级Id',
   `level` int(10) DEFAULT NULL COMMENT '层级',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for thirdpaytime
@@ -256,7 +258,7 @@ CREATE TABLE `thirdplayer` (
   `inserttime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid` (`userid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for thirdplayergame
@@ -270,8 +272,9 @@ CREATE TABLE `thirdplayergame` (
   `addtime` datetime DEFAULT NULL,
   `changemoney` varchar(100) DEFAULT '0',
   `inserttime` datetime DEFAULT NULL,
+  `updatetime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx` (`userid`,`addtime`,`changemoney`) USING BTREE
+  KEY `idx` (`userid`,`roomname`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -285,4 +288,4 @@ CREATE TABLE `third_player_order` (
   `tax` varchar(100) DEFAULT NULL,
   `date` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
