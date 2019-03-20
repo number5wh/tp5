@@ -37,7 +37,7 @@ class Test extends Controller
 //        $qrCode->setErrorCorrectionLevel('Q');
 
         header('Content-Type: '.$qrCode->getContentType());
-        $qrCode->writeFile(env('app_path').'/public/upload/qrcode/test.png');
+        $qrCode->writeFile(env('root_path').'public/upload/qrcode/test.png');
         exit;
     }
 
