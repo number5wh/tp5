@@ -8,6 +8,7 @@ use app\index\model\Playerorder;
 use app\index\model\Proxy;
 use app\index\model\Teamlevel;
 use apiData\Sms;
+use Endroid\QrCode\QrCode;
 use think\Controller;
 use think\Db;
 use think\Request;
@@ -25,14 +26,19 @@ class Test extends Controller
 
         $info = PlayerData::getOnlineList('FC0000004');
         $proxyModel = new Proxy();
-        $proxyId = 'FC0000007';
-        $info = $proxyModel->getValue(['parent_id' => $proxyId], 'max(percent) percent');
+        $proxyId = 'FC0000004';
+        $info = compile($proxyId);
+        $url = "http://distrbute.game2019.com/?proxyid=".$info;
         //$info = Ostime::getOsTime();
 
 //        $info = intval(date('i'));
 //        $info = intval('09');
-        var_dump(intval($info));
-        die;
+        $qrCode = new QrCode('http://www.baidu.com');
+//        $qrCode->setErrorCorrectionLevel('Q');
+
+        header('Content-Type: '.$qrCode->getContentType());
+        $qrCode->writeFile(env('app_path').'/public/upload/qrcode/test.png');
+        exit;
     }
 
     /**

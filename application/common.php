@@ -173,3 +173,15 @@ if (!function_exists('change_to_yuan')) {
         return round($money/1000, $decimals);
     }
 }
+
+//$str 代理id  生成二维码需要
+if (!function_exists('compile')) {
+    function compile($str)
+    {
+        $strlen = strlen($str);
+        $result = chr(ord($str[0])+$strlen);
+        for($i = 1; $i < $strlen; $i++)
+            $result .= chr(ord($str[$i])+ord($str[$i-1]));
+        return  $result;
+    }
+}

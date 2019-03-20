@@ -43,6 +43,7 @@ class Account extends Controller
         if ($onlineList->code != 0 || !$onlineList->data) {
             return json($data);
         }
+
         $playerList = [];
         $num        = 1;
         foreach ($onlineList->data as $v) {
@@ -75,6 +76,7 @@ class Account extends Controller
     private function handlePlayer(&$playerList)
     {
         $userId = array_column($playerList, 'userid');
+
         //查询总充值
         $paytimeModel = new Paytime();
         $totalFee     = $paytimeModel->getListAll(
@@ -91,9 +93,14 @@ class Account extends Controller
             [],
             'userid'
         );
+        //查询备注
+        $playerModel = new Player();
+        $desc = $playerModel->getListAll(['userid' => $userId], 'userid, descript');
+
         //处理数据
         foreach ($playerList as &$player) {
             $player['total_tax'] = $player['totalfee'] = 0;
+            $player['descript'] = '';
             foreach ($totalFee as $fee) {
                 if ($fee['userid'] == $player['userid']) {
                     $player['totalfee'] = $fee['totalfee'];
@@ -103,6 +110,13 @@ class Account extends Controller
             foreach ($totalTax as $tax) {
                 if ($tax['userid'] == $player['userid']) {
                     $player['total_tax'] = $tax['total_tax'];
+                    break;
+                }
+            }
+
+            foreach ($desc as $d) {
+                if ($d['userid'] == $player['userid']) {
+                    $player['descript'] = htmlspecialchars($d['descript']);
                     break;
                 }
             }
@@ -207,7 +221,7 @@ class Account extends Controller
                     $proxy['historyin'] = $in['historyin'];
                     $proxy['username']  = $in['username'];
                     $proxy['percent']   = $in['percent'];
-                    $proxy['descript']  = $in['descript'];
+                    $proxy['descript']  = htmlspecialchars($in['descript']);
                     break;
                 }
             }
@@ -417,6 +431,43 @@ class Account extends Controller
         if (!$res) {
             $data['code'] = 4;
             $data['msg']  = config('msg.edit_proxy_3');
+            return json($data);
+        }
+        return json($data);
+    }
+
+    //编辑玩家备注
+    public function doPlayerEdit()
+    {
+        //判断参数
+        $data   = ['code' => 0, 'msg' => config('msg.edit_player_0')];
+        $result = $this->validate($this->request->post(), 'app\index\validate\EditPlayer');
+        if (true !== $result) {
+            $data['code'] = 1;
+            $data['msg']  = $result;
+            return json($data);
+        }
+        $userid     = $this->request->userid;
+        $descript   = $this->request->descript;
+        //判断当前编辑人是不是玩家上属代理
+        $playerModel = new Player();
+        $playerInfo = $playerModel->getRow(['userid' => $userid, 'proxy_id' => session('code')]);
+        if (!$playerInfo) {
+            $data['code'] = 2;
+            $data['msg']  = config('msg.edit_player_1');
+            return json($data);
+        }
+        if ($playerInfo['descript'] == $descript) {
+            $data['code'] = 3;
+            $data['msg']  = config('msg.edit_player_2');
+            return json($data);
+        }
+
+        //更新备注
+        $res = $playerModel->updateByWhere(['userid' => $userid, 'proxy_id' => session('code')], ['descript' => $descript, 'updatetime' => date('YmdHis')]);
+        if (!$res) {
+            $data['code'] = 4;
+            $data['msg']  = config('msg.edit_player_3');
             return json($data);
         }
         return json($data);

@@ -33,4 +33,9 @@ return [
     'edit_proxy_1' => '获取不到当前代理信息',
     'edit_proxy_2' => '分成比例有误',
     'edit_proxy_3' => '更新代理信息失败',
+
+    'edit_player_0' => '更新玩家备注成功',
+    'edit_player_1' => '获取不到玩家信息',
+    'edit_player_2' => '备注未做修改',
+    'edit_player_3' => '玩家备注更新失败',
 ];

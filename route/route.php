@@ -57,6 +57,7 @@ Route::group('account', function(){
     Route::get('getPercent', 'account/getPercent')->name('account.getPercent');
     Route::post('edit', 'account/edit')->name('account.edit');
     Route::post('doEdit', 'account/doEdit')->name('account.doEdit');
+    Route::post('doPlayerEdit', 'account/doPlayerEdit')->name('account.doPlayerEdit');
 })->prefix('index/');
 
 //安全设置
