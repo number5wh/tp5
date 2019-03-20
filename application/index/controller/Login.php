@@ -57,6 +57,7 @@ class Login extends Controller
         session('id', $res['id']);
         session('code', $res['code']);
         session('addproxy', $res['allow_addproxy']);
+        session('role', 'proxy');
 
 
         //盐
@@ -108,6 +109,7 @@ class Login extends Controller
             session("id",$isLong['id']);
             session('code', $isLong['code']);
             session('addproxy', $isLong['allow_addproxy']);
+            session('role', 'proxy');
         }
     }
 

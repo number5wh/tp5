@@ -33,7 +33,7 @@ class Account extends Controller
      */
     public function playerListData()
     {
-        $data = [
+        $data       = [
             'code'  => 0,
             'msg'   => '',
             'count' => 20,  //先设置20
@@ -44,32 +44,16 @@ class Account extends Controller
             return json($data);
         }
         $playerList = [];
-        $num = 1;
+        $num        = 1;
         foreach ($onlineList->data as $v) {
 //            $v->balance = change_to_yuan($v->balance);
-            $v = json_decode(json_encode($v),true);
-            $v['id'] = $num;
+            $v            = json_decode(json_encode($v), true);
+            $v['id']      = $num;
             $playerList[] = $v;
             $num++;
         }
 
-        $userId      = isset($this->request->userid) ? strval($this->request->userid) : '';
-
-//        $page        = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
-//        $limit       = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
-//        $playerModel = new Player();
-//        //总数
-//        $where         = ['proxy_id' => session('code')];
-//        $data['count'] = $playerModel->getCount($where);
-//        if ($data['count'] <= 0) {
-//            return json($data);
-//        }
-//        //获取所属玩家
-//        $playerList = $playerModel->getList($where, $page, $limit);
-//        if ($playerList) {
-//            //获取总充值和总业绩数据
-//            $this->handlePlayer($playerList);
-//        }
+        $userId = isset($this->request->userid) ? strval($this->request->userid) : '';
 
         $this->handlePlayer($playerList);
         $res = [];
@@ -144,13 +128,16 @@ class Account extends Controller
         $page           = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
         $limit          = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
         $teamlevelModel = new Teamlevel();
-        $where          = [['parent_id', '=', session('code')]];
+        $where          = [
+            ['parent_id', '=', session('code')],
+            ['level', '=', 1]
+        ];
         if ($username) {
             $where[] = ['username', 'like', "%$username%"];
         }
         //获取总数
         $count         = $teamlevelModel->getCount($where);
-        $data['count'] = 500;
+        $data['count'] = $count;
         if (!$count) {
             return json($data);
         }
@@ -188,7 +175,7 @@ class Account extends Controller
         $proxyModel = new Proxy();
         $totalIn    = $proxyModel->getListAll(
             ['code' => $proxyListId],
-            'historyin, percent, code as proxy_id, username'
+            'historyin, percent, code as proxy_id, username, descript'
         );
         //查询玩家余额
         $playerModel = new Player();
@@ -216,9 +203,11 @@ class Account extends Controller
             }
             foreach ($totalIn as $in) {
                 if ($in['proxy_id'] == $proxy['proxy_id']) {
+                    $proxy['code']      = $in['proxy_id'];
                     $proxy['historyin'] = $in['historyin'];
                     $proxy['username']  = $in['username'];
                     $proxy['percent']   = $in['percent'];
+                    $proxy['descript']  = $in['descript'];
                     break;
                 }
             }
@@ -340,4 +329,96 @@ class Account extends Controller
         return json($data);
     }
 
+
+    //编辑代理页
+    public function edit()
+    {
+        $data    = ['code' => 0, 'msg' => '', 'data' => [], 'percent' => []];
+        $proxyId = $this->request->proxyid;
+        if (!$proxyId) {
+            $data['code'] = 1;
+            $data['msg']  = config('msg.edit_proxy_1');
+            return json($data);
+        }
+        //判断是否是下级代理并获取代理信息
+        $proxyModel = new Proxy();
+        $proxy      = $proxyModel->getRow(['code' => $proxyId, 'parent_id' => session('code')], 'code, username, allow_addproxy, percent, descript');
+        if (!$proxy) {
+            $data['code'] = 2;
+            $data['msg']  = config('msg.edit_proxy_1');
+            return json($data);
+        }
+        //获取自生的分成比例
+        $selfPercent = intval($proxyModel->getValue(['id' => session('id')], 'percent'));
+
+        //查询当前代理是否有下级代理，并获取其最大分成比例
+        $childPercent = intval($proxyModel->getValue(['parent_id' => $proxyId], 'max(percent) percent'));
+        //生成可调整的分成比例
+        $percentList = [];
+        for ($i = $childPercent + config('config.percent_diff'); $i < $selfPercent; $i += config('config.percent_diff')) {
+            $percentList[] = $i;
+        }
+        $percentList     = array_reverse($percentList);
+        $data['percent'] = $percentList;
+        $data['data']    = $proxy;
+        return json($data);
+    }
+
+    //编辑代理处理
+    public function doEdit()
+    {
+        //判断参数
+        $data   = ['code' => 0, 'msg' => config('msg.edit_proxy_0')];
+        $result = $this->validate($this->request->post(), 'app\index\validate\AddProxy');
+        if (true !== $result) {
+            $data['code'] = 1;
+            $data['msg']  = $result;
+            return json($data);
+        }
+        $username      = $this->request->username;
+        $password      = $this->request->password;
+        $percent       = $this->request->percent;
+        $allowAddproxy = $this->request->allow_addproxy;
+        $descript      = $this->request->descript;
+
+        //判断当前代理是否是编辑人下级
+        $proxyModel = new Proxy();
+        $proxyInfo  = $proxyModel->getRow(['username' => $username, 'parent_id' => session('code')]);
+        if (!$proxyInfo) {
+            $data['code'] = 2;
+            $data['msg']  = config('msg.edit_proxy_1');
+            return json($data);
+        }
+
+        //判断分成比例
+        //获取自生的分成比例
+        $selfPercent = intval($proxyModel->getValue(['id' => session('id')], 'percent'));
+        //查询当前代理是否有下级代理，并获取其最大分成比例
+        $childPercent = intval($proxyModel->getValue(['parent_id' => $proxyInfo['code']], 'max(percent) percent'));
+        if ($percent >= $selfPercent || $percent <= $childPercent) {
+            $data['code'] = 3;
+            $data['msg']  = config('msg.edit_proxy_2');
+            return json($data);
+        }
+
+        //生成盐
+        $salt = random_str(6);
+        //生成密码
+        $pwd        = md5($salt . $password);
+        $updateData = [
+            'password'       => $pwd,
+            'salt'           => $salt,
+            'allow_addproxy' => $allowAddproxy,
+            'percent'        => $percent,
+            'descript'       => $descript,
+            'updatetime'     => time()
+        ];
+        $res        = $proxyModel->updateByWhere(['code' => $proxyInfo['code']], $updateData);
+        if (!$res) {
+            $data['code'] = 4;
+            $data['msg']  = config('msg.edit_proxy_3');
+            return json($data);
+        }
+        return json($data);
+    }
 }

@@ -24,11 +24,14 @@ class Test extends Controller
 
 
         $info = PlayerData::getOnlineList('FC0000004');
+        $proxyModel = new Proxy();
+        $proxyId = 'FC0000007';
+        $info = $proxyModel->getValue(['parent_id' => $proxyId], 'max(percent) percent');
         //$info = Ostime::getOsTime();
 
 //        $info = intval(date('i'));
 //        $info = intval('09');
-        var_dump($info);
+        var_dump(intval($info));
         die;
     }
 

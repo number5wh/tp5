@@ -28,4 +28,9 @@ return [
     'add_proxy_2' => '分成比例有误',
     'add_proxy_3' => '账号名已存在',
     'add_proxy_4' => '添加失败，请稍后重试',
+
+    'edit_proxy_0' => '更新代理信息成功',
+    'edit_proxy_1' => '获取不到当前代理信息',
+    'edit_proxy_2' => '分成比例有误',
+    'edit_proxy_3' => '更新代理信息失败',
 ];
