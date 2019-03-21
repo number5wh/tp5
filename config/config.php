@@ -10,6 +10,7 @@ return [
     //二维码
     'qrcode_dir'    => env('root_path').'public/upload/qrcode',
     'qrcode_url'    => 'http://distrbute.game2019.com/?proxyid=',
+    'upload_dir'    => env('root_path').'public/upload',
 
     //log文件地址
     'log_dir'       => env('root_path') . 'log',

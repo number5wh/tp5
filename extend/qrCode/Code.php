@@ -1,6 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
+ * 生成二维码
  * User: Administrator
  * Date: 2019/3/20
  * Time: 18:28
@@ -17,7 +17,7 @@ class Code
         $url=config("config.qrcode_url").urlencode(compile($proxyId));
         $size=4;    //图片大小
         $errorCorrectionLevel = "Q"; // 容错级别：L、M、Q、H
-        $matrixPointSize = "8"; // 点的大小：1到10
+        $matrixPointSize = "4"; // 图片大小：1到10
         //实例化
         $qr = new \QRcode();
 

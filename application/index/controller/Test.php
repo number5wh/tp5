@@ -23,28 +23,24 @@ class Test extends Controller
      */
     public function index()
     {
+        $tempid =1;
+        $templateModel = new \app\index\model\Template();
+        $template = $templateModel->getRow(['template_code' => $tempid]);
+ ;
+        if($template){
+            $proxy_id = session("code");
+            $target =$filename =config('config.qrcode_dir').DIRECTORY_SEPARATOR.$proxy_id.".png";
+            $filename =config('config.qrcode_dir').DIRECTORY_SEPARATOR.$proxy_id.'_'.$tempid.".png";
+            $source = env('root_path').$template["template_image"];//str_replace("/public/",);
 
-        Code::qrcode('admin');
-        die;
 
-        $info = PlayerData::getOnlineList('FC0000004');
-        $proxyModel = new Proxy();
-        $proxyId = 'FC0000004';
-        $info = compile($proxyId);
-        $info = urlencode($info);
-        var_dump($info);
-        die;
-        $url = "http://distrbute.game2019.com/?proxyid=".$info;
-        //$info = Ostime::getOsTime();
-
-//        $info = intval(date('i'));
-//        $info = intval('09');
-        $qrCode = new QrCode('http://www.baidu.com');
-//        $qrCode->setErrorCorrectionLevel('Q');
-
-        header('Content-Type: '.$qrCode->getContentType());
-        $qrCode->writeFile(env('root_path').'public/upload/qrcode/test.png');
-        exit;
+            $res = combinePic($source,$target,$template["x"],$template["y"],$filename);
+//            header('Content-Disposition:attachment;filename=' . basename($filename));
+//            header('Content-Length:' . filesize($filename));
+////读取文件并写入到输出缓冲
+//            readfile($filename);
+//            exit();
+        }
     }
 
     /**

@@ -185,3 +185,45 @@ if (!function_exists('compile')) {
         return  $result;
     }
 }
+
+//合并图片
+if (!function_exists('combilePic')) {
+    function combinePic($dstimg,$srcimg,$x,$y,$outimg){
+        try {
+            $bigImgPath = $dstimg;
+            $qCodePath = $srcimg;
+            $bigImg = imagecreatefromstring(file_get_contents($bigImgPath));
+            $qCodeImg = imagecreatefromstring(file_get_contents($qCodePath));
+
+            list($qCodeWidth, $qCodeHight, $qCodeType) = getimagesize($qCodePath);
+            imagecopymerge($bigImg, $qCodeImg, $x, $y,0, 0, $qCodeWidth, $qCodeHight, 100);
+            list($bigWidth, $bigHight, $bigType) = getimagesize($bigImgPath);
+            $ret = imagejpeg($bigImg, $outimg);
+//
+//            list($width, $height)=getimagesize($outimg);
+////缩放比例
+//            $per=round(400/$width,3);
+//
+//            $n_w=$width*$per;
+//            $n_h=$height*$per;
+//            $new=imagecreatetruecolor($n_w, $n_h);
+//            $img=imagecreatefromjpeg($outimg);
+////copy部分图像并调整
+//            imagecopyresized($new, $img,0, 0,0, 0,$n_w, $n_h, $width, $height);
+////图像输出新图片、另存为
+//            imagejpeg($new, $outimg);
+//            imagedestroy($new);
+//            imagedestroy($img);
+
+            if($ret) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }catch(\Exception $e){
+            Log::write($e->getMessage(),"ERROR");
+            return false;
+        }
+    }
+}

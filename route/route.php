@@ -78,6 +78,11 @@ Route::group('sendmsg', function(){
     Route::post('index2', 'sendmsg/index2')->name('sendmsg.index2');
 })->prefix('index/');
 
+//分享页
+Route::group('template', function(){
+    Route::get('index', 'template/index')->name('template.index');
+})->prefix('index/');
+
 Route::group('test', function(){
     Route::get('index', 'test/index')->name('test.index');
 });
