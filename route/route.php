@@ -81,10 +81,12 @@ Route::group('sendmsg', function(){
 //分享页
 Route::group('template', function(){
     Route::get('index', 'template/index')->name('template.index');
+    Route::get('generate', 'template/generate')->name('template.generate');
 })->prefix('index/');
 
 Route::group('test', function(){
     Route::get('index', 'test/index')->name('test.index');
+
 });
 
 
