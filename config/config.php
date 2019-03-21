@@ -7,8 +7,12 @@
  */
 return [
     'cookie_expire' => 7*24*3600,
+    //二维码
+    'qrcode_dir'    => env('root_path').'public/upload/qrcode',
+    'qrcode_url'    => 'http://distrbute.game2019.com/?proxyid=',
+
     //log文件地址
-    'log_dir'       => Env::get('root_path') . 'log',
+    'log_dir'       => env('root_path') . 'log',
     //提现状态
     'checklog_status' => [
         0 => '系统处理中',

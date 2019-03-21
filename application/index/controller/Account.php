@@ -11,6 +11,7 @@ namespace app\index\controller;
 use apiData\PlayerData;
 use app\index\model\Playerorder;
 use app\index\model\Proxy;
+use qrCode\Code;
 use think\Controller;
 use app\index\model\Player;
 use app\index\model\Teamlevel;
@@ -333,6 +334,7 @@ class Account extends Controller
             $proxyModel->add($insertData);
             $teamlevelModel->addAll($insertData2);
             Db::commit();
+            Code::qrcode($code);//生成二维码
         } catch (\Exception $e) {
             $data['code'] = 5;
             $data['msg']  = config('msg.add_proxy_4');

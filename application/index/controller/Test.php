@@ -9,6 +9,7 @@ use app\index\model\Proxy;
 use app\index\model\Teamlevel;
 use apiData\Sms;
 use Endroid\QrCode\QrCode;
+use qrCode\Code;
 use think\Controller;
 use think\Db;
 use think\Request;
@@ -23,11 +24,16 @@ class Test extends Controller
     public function index()
     {
 
+        Code::qrcode('admin');
+        die;
 
         $info = PlayerData::getOnlineList('FC0000004');
         $proxyModel = new Proxy();
         $proxyId = 'FC0000004';
         $info = compile($proxyId);
+        $info = urlencode($info);
+        var_dump($info);
+        die;
         $url = "http://distrbute.game2019.com/?proxyid=".$info;
         //$info = Ostime::getOsTime();
 
