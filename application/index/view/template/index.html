@@ -5,14 +5,14 @@
 <div class="layui-container" style="float: left">
     <input type="text" id="tempid" value="1" hidden>
     <div class="layui-row layui-col-space30">
-        <img id="pic"  src="../{$pic}" class="layui-col-md4 layui-col-lg4 layui-col-xs12 layui-col-sm12">
+        <img id="pic"  src="{$short_url}" class="layui-col-md4 layui-col-lg4 layui-col-xs12 layui-col-sm12">
     </div>
     <div class="layui-row layui-col-space30" style="text-align: center">
         <div class="layui-col-sm6 layui-col-md2 layui-col-lg2 layui-col-xs6" >
             <a id="refresh_pic" href="javascript:;"><i class="layui-icon layui-icon-refresh"></i><cite>刷新</cite></a>
         </div>
         <div class="layui-col-sm6 layui-col-md2 layui-col-lg2 layui-col-xs6">
-            <a id="download_pic" href="javascript:;"><i class="layui-icon layui-icon-download-circle"></i><cite>下载</cite></a>
+            <a id="download_pic" href="{:url('template/save')}/tempid/1"><i class="layui-icon layui-icon-download-circle"></i><cite>下载</cite></a>
         </div>
     </div>
     <div class="layui-row layui-col-space40">
@@ -20,7 +20,7 @@
             <button class="layui-btn" id="getqrcode">复制链接</button>
         </div>
         <div class="layui-inline layui-col-sm8 layui-col-md3 layui-col-lg3 layui-col-xs8" >
-            <input type="text" id="qrcode" placeholder="二维码链接地址"  class="layui-input">
+            <input type="text" id="qrcode" value="{$short_url}" placeholder="二维码链接地址"  class="layui-input">
         </div>
     </div>
 </div>
@@ -49,18 +49,20 @@
                 dataType:'json',
                 success: function(res) {
                     if (res.code === 0) {
-                        $('#pic').attr('src', "../"+res.pic);
+                        $('#pic').attr('src', res.short_url);
                         $('#tempid').val(res.tempid);
+                        $('#download_pic').attr('href', "{:url('template/save')}/tempid/"+res.tempid);
+                        $('#qrcode').val(res.short_url);
                     }
                 }
             });
         });
-        $('#download_pic').on('click', function() {
-            layer.msg(2);
-        });
 
         $('#getqrcode').on('click', function() {
-            layer.msg(3);
+            var Url=document.getElementById("qrcode");
+            Url.select(); // 选择对象
+            document.execCommand("Copy"); // 执行浏览器复制命令
+            layer.msg('复制成功');
         });
     });
 </script>

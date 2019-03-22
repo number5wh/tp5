@@ -10,6 +10,7 @@ use app\index\model\Teamlevel;
 use apiData\Sms;
 use Endroid\QrCode\QrCode;
 use qrCode\Code;
+use shortUrl\ShortUrl;
 use think\Controller;
 use think\Db;
 use think\Request;
@@ -23,24 +24,10 @@ class Test extends Controller
      */
     public function index()
     {
-        $tempid =1;
-        $templateModel = new \app\index\model\Template();
-        $template = $templateModel->getRow(['template_code' => $tempid]);
- ;
-        if($template){
-            $proxy_id = session("code");
-            $target =$filename =config('config.qrcode_dir').DIRECTORY_SEPARATOR.$proxy_id.".png";
-            $filename =config('config.qrcode_dir').DIRECTORY_SEPARATOR.$proxy_id.'_'.$tempid.".png";
-            $source = env('root_path').$template["template_image"];//str_replace("/public/",);
-
-
-            $res = combinePic($source,$target,$template["x"],$template["y"],$filename);
-//            header('Content-Disposition:attachment;filename=' . basename($filename));
-//            header('Content-Length:' . filesize($filename));
-////读取文件并写入到输出缓冲
-//            readfile($filename);
-//            exit();
-        }
+        $pic = "upload/qrcode/FC0000004_1.png";
+        var_dump($_SERVER['SERVER_NAME'].'/'.$pic);
+        die;
+        ShortUrl::geturl('http://tp5.com/upload/qrcode/FC0000004_1.png');
     }
 
     /**
