@@ -2,7 +2,7 @@
 /**
  * 玩家订单
  */
-namespace app\index\model;
+namespace app\model;
 
 class Playerorder extends CommonModel
 {

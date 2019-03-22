@@ -5,7 +5,7 @@
  * Date: 2019/3/11
  * Time: 9:12
  */
-namespace app\index\model;
+namespace app\model;
 
 class Sms extends CommonModel
 {

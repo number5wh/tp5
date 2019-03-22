@@ -4,7 +4,7 @@ namespace app\index\controller;
 
 use apiData\Sms;
 use think\Controller;
-use app\index\model\Proxy;
+use app\model\Proxy;
 class Sendmsg extends Controller
 {
 

@@ -2,7 +2,7 @@
 /**
  * 玩家表
  */
-namespace app\index\model;
+namespace app\model;
 
 use think\Db;
 

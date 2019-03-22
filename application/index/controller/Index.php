@@ -1,12 +1,12 @@
 <?php
 namespace app\index\controller;
 use apiData\PlayerData;
-use app\index\model\Incomelog;
-use app\index\model\Paytime;
-use app\index\model\Player;
-use app\index\model\Playerorder;
-use app\index\model\Proxy;
-use app\index\model\Teamlevel;
+use app\model\Incomelog;
+use app\model\Paytime;
+use app\model\Player;
+use app\model\Playerorder;
+use app\model\Proxy;
+use app\model\Teamlevel;
 use think\facade\Config;
 use think\Controller;
 class Index extends Controller

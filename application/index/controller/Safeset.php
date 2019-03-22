@@ -8,7 +8,7 @@
 
 namespace app\index\controller;
 
-use app\index\model\Proxy;
+use app\model\Proxy;
 use apiData\Sms;
 use think\Controller;
 

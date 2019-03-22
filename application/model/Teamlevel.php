@@ -2,7 +2,7 @@
 /**
  * 代理等级信息
  */
-namespace app\index\model;
+namespace app\model;
 
 class Teamlevel extends CommonModel
 {

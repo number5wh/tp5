@@ -9,13 +9,13 @@
 namespace app\index\controller;
 
 use apiData\PlayerData;
-use app\index\model\Playerorder;
-use app\index\model\Proxy;
+use app\model\Playerorder;
+use app\model\Proxy;
 use qrCode\Code;
 use think\Controller;
-use app\index\model\Player;
-use app\index\model\Teamlevel;
-use app\index\model\Paytime;
+use app\model\Player;
+use app\model\Teamlevel;
+use app\model\Paytime;
 use think\Db;
 
 class Account extends Controller

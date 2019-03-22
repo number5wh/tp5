@@ -2,7 +2,7 @@
 /**
  * 计划任务执行log
  */
-namespace app\index\model;
+namespace app\model;
 
 
 class Planlog extends CommonModel

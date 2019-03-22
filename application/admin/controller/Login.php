@@ -1,21 +1,25 @@
 <?php
 
-namespace app\index\controller;
+namespace app\admin\controller;
 
 use think\Controller;
-use app\model\Proxy;
+use app\model\Sysadmin;
 use think\facade\Cookie;
 class Login extends Controller
 {
     public function login()
     {
+
         $this->checkLong();
-        if (session('?username')) {
-            return redirect(url('layout'));
+        if (session('?adminname')) {
+//            var_dump(1);
+//            die;
+            return redirect(url('admin.layout'));
         } else {
+
             $username = '';
-            if (Cookie::has('username')){
-                $username = cookie('username');
+            if (Cookie::has('adminname')){
+                $username = cookie('adminname');
             }
             $this->assign('username',$username);
             return view('login');
@@ -39,8 +43,8 @@ class Login extends Controller
         $password = trim($this->request->password);
 
         //数据验证
-        $proxyModel = new Proxy();
-        $res = $proxyModel->getRow(['username' => $username]);
+        $sysadminModel = new Sysadmin();
+        $res = $sysadminModel->getRow(['username' => $username]);
         if (!$res) {
             $data['code'] = 1;
             $data['msg'] = config('msg.wrong_username');
@@ -53,11 +57,9 @@ class Login extends Controller
         }
 
         //存入session
-        session('username', $res['username']);
-        session('id', $res['id']);
-        session('code', $res['code']);
-        session('addproxy', $res['allow_addproxy']);
-        session('role', 'proxy');
+        session('adminname', $res['username']);
+        session('adminid', $res['id']);
+        session('role', 'admin');
 
 
         //盐
@@ -71,7 +73,7 @@ class Login extends Controller
         $timeout = time()+$expire;
         //存入cookie
         cookie('auth',"$identifier:$token",$expire);
-        $proxyModel->updateById(
+        $sysadminModel->updateById(
             $res['id'],
             [
                 'last_login' => date('Y-m-d H:i:s'),
@@ -82,8 +84,8 @@ class Login extends Controller
             ]
         );
 
-        cookie('username',$res['username'],$expire);
-        save_log('login/signin', "username:{$res['username']} signin");
+        cookie('adminname',$res['username'],$expire);
+        save_log('admin/login/signin', "username:{$res['username']} signin");
 
         $data['code'] = 0;
         $data['msg'] = '登录成功';
@@ -94,9 +96,9 @@ class Login extends Controller
     public function logout()
     {
         session(null);
-        cookie('username', null);
+        cookie('adminname', null);
         cookie('auth', null);
-        return redirect(url('login'));
+        return redirect(url('admin.login'));
     }
 
     //是否记住我
@@ -105,11 +107,9 @@ class Login extends Controller
         if($isLong === false){
 
         }else{
-            session("username",$isLong['username']);
-            session("id",$isLong['id']);
-            session('code', $isLong['code']);
-            session('addproxy', $isLong['allow_addproxy']);
-            session('role', 'proxy');
+            session("adminname",$isLong['username']);
+            session("adminid",$isLong['id']);
+            session('role', 'admin');
         }
     }
 
@@ -121,6 +121,7 @@ class Login extends Controller
         if (!$auth) {
             return false;
         }
+
         list($identifier,$token) = explode(':',$auth);
 
         if (ctype_alnum($identifier) && ctype_alnum($token)){
@@ -130,8 +131,10 @@ class Login extends Controller
             return false;
         }
 
-        $proxyModel = new Proxy();
-        $info = $proxyModel->getRow(['identifier' => $arr['identifier']]);
+        $sysadminModel = new Sysadmin();
+
+        $info = $sysadminModel->getRow(['id' => 1]);
+
         if($info != null){
             if($arr['token'] != $info['token']){
                 return false;

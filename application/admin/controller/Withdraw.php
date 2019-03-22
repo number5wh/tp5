@@ -6,7 +6,7 @@
  * Time: 11:51
  */
 
-namespace app\index\controller;
+namespace app\admin\controller;
 
 use app\model\Proxy;
 use apiData\Sms;
@@ -17,7 +17,7 @@ use think\Db;
 
 class Withdraw extends Controller
 {
-    protected $middleware = ['Auth'];
+    protected $middleware = ['AdminAuth'];
 
     //获取提现记录
     public function getList()

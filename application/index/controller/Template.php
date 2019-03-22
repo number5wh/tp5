@@ -2,7 +2,7 @@
 
 namespace app\index\controller;
 
-use app\index\model\UserTemplate;
+use app\model\UserTemplate;
 use qrCode\Code;
 use shortUrl\ShortUrl;
 use think\Controller;
@@ -43,7 +43,7 @@ class Template extends Controller
                 Code::qrcode($proxy_id);
             }
 
-            $templateModel = new \app\index\model\Template();
+            $templateModel = new \app\model\Template();
             $template      = $templateModel->getRow(['template_code' => $tempid]);
             if ($template) {
 
@@ -118,7 +118,7 @@ class Template extends Controller
             $data['short_url'] = $shorturl;
             return json($data);
         }
-        $templateModel = new \app\index\model\Template();
+        $templateModel = new \app\model\Template();
         $template      = $templateModel->getRow(['template_code' => $tempid]);
 
         if ($template) {

@@ -3,10 +3,10 @@
 namespace app\index\controller;
 
 use apiData\PlayerData;
-use app\index\model\Paytime;
-use app\index\model\Playerorder;
-use app\index\model\Proxy;
-use app\index\model\Teamlevel;
+use app\model\Paytime;
+use app\model\Playerorder;
+use app\model\Proxy;
+use app\model\Teamlevel;
 use apiData\Sms;
 use Endroid\QrCode\QrCode;
 use qrCode\Code;
@@ -25,7 +25,7 @@ class Test extends Controller
     public function index()
     {
         $res = PlayerData::getPlayerList('FC0000010');
-        var_dump($res);
+        var_dump(url('admin.layout'));
         die;
 
     }

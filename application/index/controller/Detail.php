@@ -6,7 +6,7 @@
  * Time: 11:52
  */
 namespace app\index\controller;
-use app\index\model\Playergame;
+use app\model\Playergame;
 use think\Controller;
 
 class Detail extends Controller

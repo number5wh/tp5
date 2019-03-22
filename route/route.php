@@ -87,10 +87,38 @@ Route::group('template', function(){
 
 
 
+
+
 Route::group('test', function(){
     Route::get('index', 'test/index')->name('test.index');
 
 });
+
+
+
+//管理员
+
+
+Route::group('admin', function() {
+    Route::get('login', 'admin/login/login')->name('admin.login');
+    Route::post('doLogin', 'admin/login/doLogin')->name('admin.doLogin');
+    Route::get('/', 'admin/index/layout')->name('admin.layout');
+
+    Route::get('logout', 'admin/login/logout')->name('admin.logout');
+
+
+    Route::get('account/proxyList', 'admin/account/proxyList')->name('admin.account.proxyList');
+    Route::get('account/proxyListData', 'admin/account/proxyListData')->name('admin.account.proxyListData');
+    Route::post('account/edit', 'admin/account/edit')->name('admin.account.edit');
+    Route::post('account/doEdit', 'admin/account/doEdit')->name('admin.account.doEdit');
+
+
+    Route::get('withdraw/getList', 'admin/withdraw/getList')->name('admin.withdraw.list');
+
+    Route::get('safeset/index', 'admin/safeset/index')->name('admin.safeset.index');
+    Route::post('safeset/changePwd', 'admin/safeset/changePwd')->name('admin.safeset.changePwd');
+})->prefix('admin/');
+
 
 
 return [

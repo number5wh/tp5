@@ -5,7 +5,7 @@
  * Date: 2019/3/5
  * Time: 17:04
  */
-namespace app\index\model;
+namespace app\model;
 class Bankinfo extends CommonModel {
     protected $table = 'bankinfo';
 }
