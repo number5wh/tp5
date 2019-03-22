@@ -24,10 +24,10 @@ class Test extends Controller
      */
     public function index()
     {
-        $pic = "upload/qrcode/FC0000004_1.png";
-        var_dump($_SERVER['SERVER_NAME'].'/'.$pic);
+        $res = PlayerData::getPlayerList('FC0000010');
+        var_dump($res);
         die;
-        ShortUrl::geturl('http://tp5.com/upload/qrcode/FC0000004_1.png');
+
     }
 
     /**

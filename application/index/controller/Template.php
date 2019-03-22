@@ -23,22 +23,26 @@ class Template extends Controller
         $tempid = 1;
         $userTemplateModel = new UserTemplate();
         $tempInfo          = $userTemplateModel->getRow(['proxy_id' => session('code'), 'template_code' => $tempid]);
-        $pic  = $shorturl  = '';
         $proxy_id = session("code");
+        $pic  = $shorturl  = $downUrl = '';
+        $downUrl = config('config.qrcode_url').urlencode(compile($proxy_id));
+
         if ($tempInfo) {
             $pic = $tempInfo['image_url'];
-            if ($tempInfo['down_url']) {
-                $shorturl = $tempInfo['down_url'];
+            if ($tempInfo['short_url']) {
+                $shorturl = $tempInfo['short_url'];
             } else {
-                $pic = "upload/qrcode/". $proxy_id . '_' . $tempid . ".png";
-                $shorturl = ShortUrl::geturl('http://'.$_SERVER['SERVER_NAME'].'/'.$pic);
+                $shorturl = ShortUrl::geturl($downUrl);
                 if ($shorturl) {
-                    $userTemplateModel->updateByWhere(['proxy_id' => $proxy_id, 'template_code' => $tempid], ['down_url' => $shorturl]);
+                    $userTemplateModel->updateByWhere(['proxy_id' => $proxy_id, 'template_code' => $tempid], ['short_url' => $shorturl]);
                 }
             }
 
         } else {
-            Code::qrcode($proxy_id);
+            if (!file_exists(config('config.qrcode_dir') . DIRECTORY_SEPARATOR . $proxy_id . ".png")) {
+                Code::qrcode($proxy_id);
+            }
+
             $templateModel = new \app\index\model\Template();
             $template      = $templateModel->getRow(['template_code' => $tempid]);
             if ($template) {
@@ -54,11 +58,12 @@ class Template extends Controller
                         'template_code' => $tempid,
                         'qrcode' => "upload/qrcode/". $proxy_id . ".png",
                         'image_url' => "upload/qrcode/". $proxy_id . '_' . $tempid . ".png",
+                        'down_url' => $downUrl
                     ];
                     //获取短链接地址
-                    $shorturl = ShortUrl::geturl('http://'.$_SERVER['SERVER_NAME'].'/'.$pic);
+                    $shorturl = ShortUrl::geturl($downUrl);
                     if ($shorturl) {
-                        $insertData['down_url'] = $shorturl;
+                        $insertData['short_url'] = $shorturl;
                     }
                     $userTemplateModel->add($insertData);
                 }
@@ -70,7 +75,11 @@ class Template extends Controller
             }
         }
 
-
+        if(strpos($_SERVER['HTTP_USER_AGENT'], 'iPhone')||strpos($_SERVER['HTTP_USER_AGENT'], 'iPad')){
+            $this->assign('down_url', 'javascript:;');
+        } else {
+            $this->assign('down_url', url('template/save').'/tempid/1');
+        }
         $this->assign('pic', $pic);
         $this->assign('short_url', $shorturl);
         return view('index');
@@ -78,9 +87,8 @@ class Template extends Controller
 
     public function generate()
     {
-        $data = ['code' => 0, 'msg' => '', 'pic' => '', 'short_url' => '', 'tempid' => ''];
+        $data = ['code' => 0, 'msg' => '', 'pic' => '', 'short_url' => '', 'tempid' => '', 'down_url' => ''];
         $tempid = $this->request->tempid ? intval($this->request->tempid) : 1;
-        $pic  = $shorturl  = '';
         if (!in_array($tempid, [1, 2, 3, 4, 5, 6])) {
             $tempid = 1;
         } else {
@@ -94,15 +102,17 @@ class Template extends Controller
         $userTemplateModel = new UserTemplate();
         $tempInfo          = $userTemplateModel->getRow(['proxy_id' => session('code'), 'template_code' => $tempid]);
         $proxy_id = session("code");
+        $pic  = $shorturl  = $downUrl = '';
+        $downUrl = config('config.qrcode_url').urlencode(compile($proxy_id));
         if ($tempInfo) {
             $data['pic'] = $tempInfo['image_url'];
-            if ($tempInfo['down_url']) {
-                $shorturl = $tempInfo['down_url'];
+            $data['down_url'] = $downUrl;
+            if ($tempInfo['short_url']) {
+                $shorturl = $tempInfo['short_url'];
             } else {
-                $pic = "upload/qrcode/". $proxy_id . '_' . $tempid . ".png";
-                $shorturl = ShortUrl::geturl('http://'.$_SERVER['SERVER_NAME'].'/'.$pic);
+                $shorturl = ShortUrl::geturl($downUrl);
                 if ($shorturl) {
-                    $userTemplateModel->updateByWhere(['proxy_id' => $proxy_id, 'template_code' => $tempid], ['down_url' => $shorturl]);
+                    $userTemplateModel->updateByWhere(['proxy_id' => $proxy_id, 'template_code' => $tempid], ['short_url' => $shorturl]);
                 }
             }
             $data['short_url'] = $shorturl;
@@ -123,11 +133,12 @@ class Template extends Controller
                     'template_code' => $tempid,
                     'qrcode' => "upload/qrcode/". $proxy_id . ".png",
                     'image_url' => "upload/qrcode/". $proxy_id . '_' . $tempid . ".png",
+                    'down_url' => $downUrl
                 ];
                 //获取短链接地址
-                $shorturl = ShortUrl::geturl('http://'.$_SERVER['SERVER_NAME'].'/'.$pic);
+                $shorturl = ShortUrl::geturl($downUrl);
                 if ($shorturl) {
-                    $insertData['down_url'] = $shorturl;
+                    $insertData['short_url'] = $shorturl;
                 }
                 $userTemplateModel->add($insertData);
             }
@@ -139,6 +150,7 @@ class Template extends Controller
         }
         $data['pic'] = $pic;
         $data['short_url'] = $shorturl;
+        $data['down_url'] = $downUrl;
         return json($data);
     }
 

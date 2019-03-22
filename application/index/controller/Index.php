@@ -113,8 +113,8 @@ class Index extends Controller
     //统计总业绩
     private function getTotalTax()
     {
-        $playerorderModel = new Playerorder();
-        $info = intval($playerorderModel->getValue(['proxy_id' => session('code')], 'sum(total_tax) total_tax'));
+        $incomeLog = new Incomelog();
+        $info = intval($incomeLog->getValue(['proxy_id' => session('code')], 'sum(totaltax) total_tax'));
         return $info;
     }
 

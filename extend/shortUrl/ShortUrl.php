@@ -12,7 +12,7 @@ class ShortUrl
     const SOURCE = "3271760578";
     public static function geturl($longurl)
     {
-        $url = self::ApiUrl.'?source='.self::SOURCE.'&url_long='.$longurl;
+        $url = self::ApiUrl.'?source='.self::SOURCE.'&url_long='.urlencode($longurl);
         try {
             $info = file_get_contents($url);
             $res = json_decode($info, true);
