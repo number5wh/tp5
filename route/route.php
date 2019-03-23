@@ -116,6 +116,11 @@ Route::group('admin', function() {
     Route::post('withdraw/doWithdraw', 'admin/withdraw/doWithdraw')->name('admin.withdraw.doWithdraw');
     Route::post('withdraw/doWithdrawAll', 'admin/withdraw/doWithdrawAll')->name('admin.withdraw.doWithdrawAll');
 
+    Route::get('user/getList', 'admin/user/getList')->name('admin.user.list');
+    Route::get('user/getListData', 'admin/user/getListData')->name('admin.user.listData');
+    Route::get('user/add', 'admin/user/add')->name('admin.user.add');
+    Route::post('user/doAdd', 'admin/user/doAdd')->name('admin.user.doAdd');
+
     Route::get('safeset/index', 'admin/safeset/index')->name('admin.safeset.index');
     Route::post('safeset/changePwd', 'admin/safeset/changePwd')->name('admin.safeset.changePwd');
 })->prefix('admin/');

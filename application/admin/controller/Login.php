@@ -59,6 +59,7 @@ class Login extends Controller
         //存入session
         session('adminname', $res['username']);
         session('adminid', $res['id']);
+        session('roleid', $res['roleid']);
         session('role', 'admin');
 
 
@@ -109,6 +110,7 @@ class Login extends Controller
         }else{
             session("adminname",$isLong['username']);
             session("adminid",$isLong['id']);
+            session("roleid",$isLong['roleid']);
             session('role', 'admin');
         }
     }

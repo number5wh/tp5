@@ -56,6 +56,10 @@ return [
     'handle_withdrawall_00' => '提现处理失败',
     'handle_withdrawall_111' => '存在已经审核通过的数据，不能重复审核',
 
+    'add_user_0' => '新增账号成功',
+    'add_user_1' => '账号名重复',
+    'add_user_2' => '添加失败',
+
 
 
 ];

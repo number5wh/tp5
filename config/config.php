@@ -33,5 +33,5 @@ return [
     'sms_expire' => 60,
 
     //分成比例相差值
-    'percent_diff' => 10
+    'percent_diff' => 10,
 ];

@@ -60,6 +60,7 @@
           </div>
           
           <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+            {if ($roleid == 1)}
             <li data-name="account" class="layui-nav-item">
               <a href="javascript:;" lay-tips="账号管理" lay-direction="2">
                 <i class="layui-icon layui-icon-list"></i>
@@ -71,6 +72,7 @@
                 </dd>
               </dl>
             </li>
+            {/if}
 
             <li data-name="withdraw" class="layui-nav-item">
               <a href="javascript:;" lay-tips="提现管理" lay-direction="2">
@@ -84,6 +86,25 @@
 
               </dl>
             </li>
+
+            <li data-name="user" class="layui-nav-item">
+              <a href="javascript:;" lay-tips="用户管理" lay-direction="2">
+                <i class="layui-icon layui-icon-list"></i>
+                <cite>用户管理</cite>
+              </a>
+              <dl class="layui-nav-child">
+                <dd data-name="user-list">
+                  <a lay-href="{:url('admin.user.list')}">用户列表</a>
+                </dd>
+                {if ($roleid == 1)}
+                <dd data-name="user-list">
+                  <a lay-href="{:url('admin.user.add')}">新增用户</a>
+                </dd>
+                {/if}
+
+              </dl>
+            </li>
+
             <li data-name="set" class="layui-nav-item">
               <a href="javascript:;" lay-tips="安全设置" lay-direction="2">
                 <i class="layui-icon layui-icon-list"></i>
