@@ -15,7 +15,8 @@ class Login extends Validate
 	protected $rule = [
 //	    '__token__' => 'token|require',
         'username|登录名'  => 'require|max:50',
-        'password|密码'   => 'require|min:6'
+        'password|密码'   => 'require|min:6',
+        'captcha|验证码'=>'require|captcha'
     ];
     
     /**

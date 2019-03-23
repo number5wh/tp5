@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 
 Route::get('/', 'index/layout')->name('layout');
+Route::get('capture', 'login/verify')->name('capture');
 Route::get('login', 'login/login')->name('login');
 Route::post('login/doLogin', 'login/doLogin')->name('doLogin');
 Route::get('logout', 'login/logout')->name('logout');

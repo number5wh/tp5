@@ -30,13 +30,10 @@
 <script>
     layui.config({
         base: '/src/layuiadmin/' //静态资源所在路径
-    }).extend({
-        getToken:'mymod/getToken'
-    }).use(['layer', 'form', 'jquery', 'getToken'],function () {
+    }).use(['layer', 'form', 'jquery'],function () {
         var layer = layui.layer
             ,form = layui.form
-            ,$    = layui.$
-            ,getToken = layui.getToken;
+            ,$    = layui.$;
 
         form.on('submit(login-form)', function(data) {
             $.ajax({
@@ -45,6 +42,7 @@
                 data:{
                     'username' : $.trim(data.field.username),
                     'password' : $.trim(data.field.password),
+                    'captcha'  : $.trim(data.field.captcha),
                     // '__token__': $.trim(data.field.__token__)
                 },
                 dataType:'json',
@@ -53,13 +51,22 @@
                         location.href = '/';
                     } else {
                         layer.msg(res.msg, {icon:5});
-                        // var token = getToken.getToken();
-                        // $("input[name='__token__']").val(token);
+
+                            $('#cap').html("<img src=\"{:url('capture')}\" alt=\"captcha\" id='capimg'/>");
+                            $('#capimg').width($('#item').width()).height($('#item').height()*1.3);
                     }
                 }
             });
 
             return false;
+        });
+
+        //设置二维码宽高
+        $('#capimg').width($('#item').width()).height($('#item').height()*1.3);
+
+        $('#cap').on('click', function() {
+            $(this).html("<img src=\"{:url('capture')}\" alt=\"captcha\" id='capimg'/>");
+            $('#capimg').width($('#item').width()).height($('#item').height()*1.3);
         });
     })
 </script>

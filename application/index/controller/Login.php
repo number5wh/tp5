@@ -2,11 +2,17 @@
 
 namespace app\index\controller;
 
+use think\captcha\Captcha;
 use think\Controller;
 use app\model\Proxy;
 use think\facade\Cookie;
 class Login extends Controller
 {
+    public function verify()
+    {
+        $captcha = new Captcha(['length' => 4,'useNoise'=>false]);
+        return $captcha->entry();
+    }
     public function login()
     {
         $this->checkLong();
