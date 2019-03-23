@@ -52,21 +52,23 @@
                     } else {
                         layer.msg(res.msg, {icon:5});
 
-                            $('#cap').html("<img src=\"{:url('capture')}\" alt=\"captcha\" id='capimg'/>");
-                            $('#capimg').width($('#item').width()).height($('#item').height()*1.3);
+                            $('#de222').html("<img src=\"{:url('capture')}\" alt=\"captcha\" id='capimg'/>");
+                            $('#capimg').width($('#item').width()*0.4).height($('#item').height());
                     }
                 }
             });
 
             return false;
         });
+        $('#de111').width($('#item').width()*0.6);
+        $('#de222').width($('#item').width()*0.4);
 
         //设置二维码宽高
-        $('#capimg').width($('#item').width()).height($('#item').height()*1.3);
+        $('#capimg').width($('#item').width()*0.4).height($('#item').height());
 
-        $('#cap').on('click', function() {
+        $('#de222').on('click', function() {
             $(this).html("<img src=\"{:url('capture')}\" alt=\"captcha\" id='capimg'/>");
-            $('#capimg').width($('#item').width()).height($('#item').height()*1.3);
+            $('#capimg').width($('#item').width()*0.4).height($('#item').height());
         });
     })
 </script>
