@@ -6,10 +6,10 @@
 namespace app\command;
 
 use apiData\PlayerData;
-use app\index\model\Planlog;
-use app\index\model\Playergame;
-use app\index\model\Proxy;
-use app\index\model\Thirdplayergame;
+use app\model\Planlog;
+use app\model\Playergame;
+use app\model\Proxy;
+use app\model\Thirdplayergame;
 use think\console\Command;
 use think\console\Input;
 use think\console\Output;
@@ -27,16 +27,16 @@ class GetUsergame extends Command
 
     protected function execute(Input $input, Output $output)
     {
-        $planlogModel = new Planlog();
-        $today        = date('Ymd');
-        $planId       = $planlogModel->add(
-            [
-                'plan'       => 'getUsergame',
-                'day'        => $today,
-                'status'     => 0,
-                'inserttime' => date('Y-m-d H:i:s')
-            ]
-        );
+//        $planlogModel = new Planlog();
+//        $today        = date('Ymd');
+//        $planId       = $planlogModel->add(
+//            [
+//                'plan'       => 'getUsergame',
+//                'day'        => $today,
+//                'status'     => 0,
+//                'inserttime' => date('Y-m-d H:i:s')
+//            ]
+//        );
         save_log('apidata/getUsergame', "start ");
         //获取代理列表
         $today      = date('Ymd');
@@ -105,7 +105,7 @@ class GetUsergame extends Command
                 $output->writeln('code:500,msg:' . $e->getMessage() . 'data:insertfail');
             }
         }
-        $planlogModel->updateById($planId, ['updatetime' => date('Y-m-d H:i:s'), 'status' => 1]);
+        //$planlogModel->updateById($planId, ['updatetime' => date('Y-m-d H:i:s'), 'status' => 1]);
         save_log('apidata/getUsergame', "end ");
     }
 }

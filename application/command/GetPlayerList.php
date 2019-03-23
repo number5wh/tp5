@@ -6,10 +6,10 @@
 namespace app\command;
 
 use apiData\PlayerData;
-use app\index\model\Planlog;
-use app\index\model\Proxy;
-use app\index\model\Thirdplayer;
-use app\index\model\Player;
+use app\model\Planlog;
+use app\model\Proxy;
+use app\model\Thirdplayer;
+use app\model\Player;
 use think\console\Command;
 use think\console\Input;
 use think\console\Output;
@@ -26,16 +26,16 @@ class GetPlayerList extends Command
 
     protected function execute(Input $input, Output $output)
     {
-        $planlogModel = new Planlog();
-        $today        = date('Ymd');
-        $planId       = $planlogModel->add(
-            [
-                'plan'       => 'getPlayerList',
-                'day'        => $today,
-                'status'     => 0,
-                'inserttime' => date('Y-m-d H:i:s')
-            ]
-        );
+//        $planlogModel = new Planlog();
+//        $today        = date('Ymd');
+//        $planId       = $planlogModel->add(
+//            [
+//                'plan'       => 'getPlayerList',
+//                'day'        => $today,
+//                'status'     => 0,
+//                'inserttime' => date('Y-m-d H:i:s')
+//            ]
+//        );
 
         save_log('apidata/getPlayerList', "start ");
         //获取代理列表
@@ -104,7 +104,7 @@ class GetPlayerList extends Command
             }
 
         }
-        $planlogModel->updateById($planId, ['updatetime' => date('Y-m-d H:i:s'), 'status' => 1]);
+        //$planlogModel->updateById($planId, ['updatetime' => date('Y-m-d H:i:s'), 'status' => 1]);
         save_log('apidata/getPlayerList', "end ");
     }
 }

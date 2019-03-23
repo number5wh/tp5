@@ -48,7 +48,7 @@ class Withdraw extends Controller
         $res = $checklogModel->getList(['proxy_id' => session('code')], $page, $limit);
         //checktype 1 支付宝  2 银行卡
         foreach ($res as &$v) {
-            $v['statusInf']     = in_array($v['status'], $statusArr) ? $statusArr[$v['status']] : config('config.checklog_status_other');
+            $v['statusInf']     = in_array($v['status'], array_keys($statusArr)) ? $statusArr[$v['status']] : config('config.checklog_status_other');
             $v['getname']       = $v['checktype'] == 1 ? $v['alipay_name'] : $v['name'];
             $v['checktypeName'] = config('config.check_type')[$v['checktype']];
             $v['account']       = $v['checktype'] == 1 ? $v['alipay'] : $v['cardaccount'];
@@ -100,20 +100,26 @@ class Withdraw extends Controller
         $amount    = round($this->request->amount, 2);
         $code      = $this->request->code;
 
+        //提现最少金额判断
+        if ($amount < config('config.minimum_money')) {
+            $data['code'] = 2;
+            $data['msg']  = config('msg.withdraw_2');
+            return json($data);
+        }
 
         //获取用户信息
         $proxyModel = new Proxy();
         $userInfo   = $proxyModel->getRow(['id' => session('id')]);
         //绑定手机判断
         if (!$userInfo['bind_mobile']) {
-            $data['code'] = 2;
+            $data['code'] = 3;
             $data['msg']  = config('msg.bind_mobile');
             return json($data);
         }
         //验证码验证
         $check = Sms::validateSms($userInfo['bind_mobile'], $code);
         if ($check->code != 0) {
-            $data['code'] = 3;
+            $data['code'] = 4;
             $data['msg']  = config('msg.wrong_code');
             return json($data);
         }
@@ -124,34 +130,39 @@ class Withdraw extends Controller
         $account       = '';
         $account       = $checktype == 1 ? $info['alipay'] : $info['cardaccount'];
         if (!$account) {
-            $data['code'] = 4;
+            $data['code'] = 5;
             $data['msg']  = config('msg.no_account');
             return json($data);
         }
 
         //判断剩余金额
         if ($userInfo['balance'] < $amount) {
-            $data['code'] = 5;
+            $data['code'] = 6;
             $data['msg']  = config('msg.enough_money');
             return json($data);
         }
 
         //开始处理提现申请
         $leftMoney = $userInfo['balance'] - $amount;
+        $tax = round($amount*config('config.checklog_tax'), 2);
+        $actualMoney = $amount - $tax;
 
         //提现表数据
         $checklogModel = new Checklog();
         $orderid       = random_orderid();
-        $addData       = [
-            'orderid'    => $orderid,
-            'proxy_id'   => session('code'),
-            'amount'     => $amount,//提现金额
-            'balance'    => $leftMoney,//剩余金额
-            'checktype'  => $checktype,
-            'descript'   => $userInfo['nickname'] . ',' . $userInfo['code'] . '于' . date('Y-m-d H:i:s') . '提现金额' . $amount . '元',
-            'status'     => 0,
-            'createtime' => time(),
-            'addtime'    => date('Y-m-d H:i:s')
+        $addData = [
+            'orderid'       => $orderid,
+            'proxy_id'      => session('code'),
+            'amount'        => $amount,//提现金额
+            'actual_amount' => $actualMoney, //实际打款金额
+            'tax'           => config('config.checklog_tax'), //手续费比例
+            'tax_amount'    => $tax, //手续费
+            'balance'       => $leftMoney,//剩余金额
+            'checktype'     => $checktype,
+            'descript'      => $userInfo['code'] . '于' . date('Y-m-d H:i:s') . '提现金额' . $amount . '元',
+            'status'        => 0,
+            'createtime'    => time(),
+            'addtime'       => date('Y-m-d H:i:s')
         ];
         if ($checktype == 1) {
             $addData['alipay']      = $info['alipay'];
@@ -167,13 +178,13 @@ class Withdraw extends Controller
             //先扣除总额
             $proxyModel->updateById(session('id'), ['balance' => $leftMoney]);
             //添加提现表
-            $checklogModel->add($addData);
+            $res = $checklogModel->add($addData);
             Db::commit();
         } catch (\Exception $e) {
-            $data['code'] = 6;
+            $data['code'] = 7;
             $data['msg']  = config('msg.withdraw_1');
             Db::rollback();
-            save_log('withdraw/apply', "status:0,returncode:1,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account}");
+            save_log('withdraw/apply', "status:0,returncode:1,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account},msg:{$e->getMessage()}");
             return json($data);
         }
 

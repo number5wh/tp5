@@ -72,7 +72,7 @@ class Login extends Controller
         $expire = config('config.cookie_expire');
         $timeout = time()+$expire;
         //存入cookie
-        cookie('auth',"$identifier:$token",$expire);
+        cookie('adminauth',"$identifier:$token",$expire);
         $sysadminModel->updateById(
             $res['id'],
             [
@@ -97,7 +97,7 @@ class Login extends Controller
     {
         session(null);
         cookie('adminname', null);
-        cookie('auth', null);
+        cookie('adminauth', null);
         return redirect(url('admin.login'));
     }
 
@@ -117,7 +117,7 @@ class Login extends Controller
     public function checkRemember(){
         $arr = array();
         $now = time();
-        $auth = cookie('auth');
+        $auth = cookie('adminauth');
         if (!$auth) {
             return false;
         }

@@ -27,28 +27,28 @@ class Withdraw extends Controller
 
     public function getListData()
     {
-        $data  = [
-            'code'  => 0,
-            'msg'   => '',
-            'count' => 0,
-            'data'  => [],
-        ];
-        $page  = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
-        $limit = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
+        $data   = ['code' => 0, 'msg' => '', 'count' => 0, 'data' => []];
+        $page   = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
+        $limit  = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
+        $status = intval($this->request->status);
+        $where  = [];
+        if (in_array($status, array_keys(config('config.checklog_status')))) {
+            $where['status'] = $status;
+        }
 
         $statusArr     = config('config.checklog_status');
         $checklogModel = new Checklog();
         //获取总数
-        $count         = $checklogModel->getCount(['proxy_id' => session('code')]);
+        $count         = $checklogModel->getCount($where);
         $data['count'] = $count;
         if ($count == 0) {
             return json($data);
         }
         //获取记录
-        $res = $checklogModel->getList(['proxy_id' => session('code')], $page, $limit);
+        $res = $checklogModel->getList($where, $page, $limit, '*', ['createtime' => 'desc']);
         //checktype 1 支付宝  2 银行卡
-        foreach ($res as &$v) {
-            $v['statusInf']     = in_array($v['status'], $statusArr) ? $statusArr[$v['status']] : config('config.checklog_status_other');
+        foreach ($res as $k =>&$v) {
+            $v['statusInf']     = in_array($v['status'], array_keys($statusArr)) ? $statusArr[$v['status']] : config('config.checklog_status_other');
             $v['getname']       = $v['checktype'] == 1 ? $v['alipay_name'] : $v['name'];
             $v['checktypeName'] = config('config.check_type')[$v['checktype']];
             $v['account']       = $v['checktype'] == 1 ? $v['alipay'] : $v['cardaccount'];
@@ -58,213 +58,153 @@ class Withdraw extends Controller
         return json($data);
     }
 
-    //获取总额
-    public function getAmount()
-    {
-        $checklogModel = new Checklog();
-        $amount        = $checklogModel->getRow(['proxy_id' => session('code')], 'sum(amount) amount');
-        $data          = [
-            'code'   => 0,
-            'amount' => $amount['amount']
-        ];
-        return json($data);
-    }
-
-    //提现申请
-    public function apply()
-    {
-        $bankInfoModel = new Bankinfo();
-        $info          = $bankInfoModel->getRow(['proxy_id' => session('code')]);
-        //获取可提现金额
-        $proxyModel = new Proxy();
-        $user       = $proxyModel->getRow(['id' => session('id')], 'balance');
-        $this->assign('info', $info);
-        $this->assign('balance', $user['balance']);
-        return view('apply');
-    }
-
     //处理提现
-    public function doApply()
+    public function doWithdraw()
     {
-        $result = $this->validate($this->request->post(), 'app\index\validate\DoWithdraw');
-        $data   = [
-            'code' => 0,
-            'msg'  => config('msg.withdraw_0')
-        ];
+        $data   = ['code' => 0, 'msg' => config('msg.handle_withdraw_0'), 'statusinfo' => '', 'info' => ''];
+        $result = $this->validate($this->request->post(), 'app\admin\validate\HandleWithdraw');
         if (true !== $result) {
             $data['code'] = 1;
             $data['msg']  = $result;
             return json($data);
         }
-        $checktype = $this->request->checktype;
-        $amount    = round($this->request->amount, 2);
-        $code      = $this->request->code;
 
-
-        //获取用户信息
-        $proxyModel = new Proxy();
-        $userInfo   = $proxyModel->getRow(['id' => session('id')]);
-        //绑定手机判断
-        if (!$userInfo['bind_mobile']) {
-            $data['code'] = 2;
-            $data['msg']  = config('msg.bind_mobile');
-            return json($data);
-        }
-        //验证码验证
-        $check = Sms::validateSms($userInfo['bind_mobile'], $code);
-        if ($check->code != 0) {
-            $data['code'] = 3;
-            $data['msg']  = config('msg.wrong_code');
-            return json($data);
-        }
-
-        //判断提现账户是否存在
-        $bankInfoModel = new Bankinfo();
-        $info          = $bankInfoModel->getRow(['proxy_id' => session('code')]);
-        $account       = '';
-        $account       = $checktype == 1 ? $info['alipay'] : $info['cardaccount'];
-        if (!$account) {
-            $data['code'] = 4;
-            $data['msg']  = config('msg.no_account');
-            return json($data);
-        }
-
-        //判断剩余金额
-        if ($userInfo['balance'] < $amount) {
-            $data['code'] = 5;
-            $data['msg']  = config('msg.enough_money');
-            return json($data);
-        }
-
-        //开始处理提现申请
-        $leftMoney = $userInfo['balance'] - $amount;
-
-        //提现表数据
+        $id            = intval($this->request->id);
+        $status        = intval($this->request->status);
         $checklogModel = new Checklog();
-        $orderid       = random_orderid();
-        $addData       = [
-            'orderid'    => $orderid,
-            'proxy_id'   => session('code'),
-            'amount'     => $amount,//提现金额
-            'balance'    => $leftMoney,//剩余金额
-            'checktype'  => $checktype,
-            'descript'   => $userInfo['nickname'] . ',' . $userInfo['code'] . '于' . date('Y-m-d H:i:s') . '提现金额' . $amount . '元',
-            'status'     => 0,
-            'createtime' => time(),
-            'addtime'    => date('Y-m-d H:i:s')
-        ];
-        if ($checktype == 1) {
-            $addData['alipay']      = $info['alipay'];
-            $addData['alipay_name'] = $info['alipay_name'];
-        } else {
-            $addData['name']        = $info['name'];
-            $addData['bank']        = $info['bank'];
-            $addData['cardaccount'] = $info['cardaccount'];
+        $info          = $checklogModel->getRowById($id);
+        if (!$info) {
+            $data['code'] = 2;
+            $data['msg']  = config('msg.handle_withdraw_1');
+            return json($data);
         }
-        //事务处理
+        if ($info['status'] == $status && $status==1) {//重复设置
+            $data['code'] = 3;
+            $data['msg']  = config('msg.handle_withdrawall_111');
+            return json($data);
+        }
+        if ($info['status'] == 2 || $info['status'] == 3) {//已拒绝或已完成
+            $data['code'] = 3;
+            $data['msg']  = config('msg.handle_withdraw_2');
+            return json($data);
+        }
+        if ($info['status'] == 0 && $status == 3) {//未审批的直接设置已完成
+            $data['code'] = 4;
+            $data['msg']  = config('msg.handle_withdraw_3');
+            return json($data);
+        }
+        if ($info['status'] == 1 && $status == 2) {
+            $data['code'] = 5;
+            $data['msg']  = config('msg.handle_withdraw_5');
+            return json($data);
+        }
+
+        $statusArr     = config('config.checklog_status');
         Db::startTrans();
         try {
-            //先扣除总额
-            $proxyModel->updateById(session('id'), ['balance' => $leftMoney]);
-            //添加提现表
-            $checklogModel->add($addData);
+            $checklogModel->updateById($id, ['status' => $status, 'info' => $statusArr[$status], 'checktime' => date('YmdHis'), 'checkuser' => session('adminname')]);
+            if ($status == 2) {//退款
+                $proxyModel = new Proxy();
+                $proxyModel->updateByWhere(['code' => $info['proxy_id']], ['balance' => Db::raw('balance+' . $info['amount'])]);
+            }
             Db::commit();
+            save_log('withdraw/handle', "success,status:$status,proxyid:{$info['proxy_id']},checkuser:" . session('adminname'));
+            $data['statusinfo'] = $statusArr[$status];
+            $data['info'] = $statusArr[$status];
+            return json($data);
         } catch (\Exception $e) {
-            $data['code'] = 6;
-            $data['msg']  = config('msg.withdraw_1');
             Db::rollback();
-            save_log('withdraw/apply', "status:0,returncode:1,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account}");
+            save_log('withdraw/handle', "fail,msg:{$e->getMessage()}status:$status,proxyid:{$info['proxy_id']},checkuser:" . session('adminname'));
+            $data['code'] = 5;
+            $data['msg']  = config('msg.handle_withdraw_4');
             return json($data);
         }
-
-        save_log('withdraw/apply', "status:1,returncode:0,username:{$userInfo['username']},amount:{$amount},type:{$checktype},account:{$account}");
-        $data['leftmoney'] = $leftMoney;
-        return json($data);
     }
 
-    //结算账号
-    public function set()
-    {
-        $bankInfoModel = new Bankinfo();
-        $info          = $bankInfoModel->getRow(['proxy_id' => session('code')]);
-        $this->assign('info', $info);
-        return view('set');
-    }
 
-    //修改新增支付宝账号
-    public function doSetAlipay()
+    //批量处理提现
+    public function doWithdrawAll()
     {
-        $data   = [
-            'code' => 0,
-            'msg'  => config('msg.update_success')
-        ];
-        $result = $this->validate($this->request->post(), 'app\index\validate\ChangeAlipay');
+        $data   = ['code' => 0, 'msg' => config('msg.handle_withdrawall_0'), 'statusinfo' => '', 'info' => ''];
+        $result = $this->validate($this->request->post(), 'app\admin\validate\HandleWithdrawAll');
         if (true !== $result) {
             $data['code'] = 1;
             $data['msg']  = $result;
             return json($data);
         }
-        $alipay     = $this->request->alipay;
-        $alipayName = $this->request->alipay_name;
 
-        $bankInfoModel = new Bankinfo();
-        $info          = $bankInfoModel->getRow(['proxy_id' => session('code')]);
-        //判断是否有改动
-        if ($info && $info['alipay'] == $alipay && $info['alipay_name'] == $alipayName) {
+        $idArr         = $this->request->idArr;
+
+        $status        = intval($this->request->status);
+        $checklogModel = new Checklog();
+        //判断id数组合法性
+        if (!$idArr) {
             $data['code'] = 2;
-            $data['msg']  = config('msg.nochange');
+            $data['msg']  = config('msg.handle_withdrawall_1');
             return json($data);
         }
-
-        if (!$info) {
-            $res = $bankInfoModel->add(['proxy_id' => session('code'), 'alipay' => $alipay, 'alipay_name' => $alipayName]);
-        } else {
-            $res = $bankInfoModel->updateByWhere(['proxy_id' => session('code')], ['alipay' => $alipay, 'alipay_name' => $alipayName]);
+        foreach ($idArr as $id) {
+            if (!is_numeric($id)) {
+                $data['code'] = 2;
+                $data['msg']  = config('msg.handle_withdrawall_1');
+                return json($data);
+            }
         }
-
-        if (!$res) {
-            $data['code'] = 3;
-            $data['msg']  = config('msg.update_fail');
-        }
-        return json($data);
-    }
-
-    //修改新增银行账号
-    public function doSetBank()
-    {
-        $result = $this->validate($this->request->post(), 'app\index\validate\ChangeBank');
-        $data   = [
-            'code' => 0,
-            'msg'  => config('msg.update_success')
-        ];
-        if (true !== $result) {
-            $data['code'] = 1;
-            $data['msg']  = $result;
-            return json($data);
-        }
-        $name        = $this->request->name;
-        $bank        = $this->request->bank;
-        $cardaccount = $this->request->cardaccount;
-
-        $bankInfoModel = new Bankinfo();
-        $info          = $bankInfoModel->getRow(['proxy_id' => session('code')]);
-        //判断是否有改动
-        if ($info && $info['name'] == $name && $info['bank'] == $bank && $info['cardaccount'] == $cardaccount) {
+        $list  = $checklogModel->getListAll(['id' => $idArr]);
+        if (!$list || count($list) != count($idArr)) {
             $data['code'] = 2;
-            $data['msg']  = config('msg.nochange');
+            $data['msg']  = config('msg.handle_withdrawall_1');
             return json($data);
         }
 
-        if (!$info) {
-            $res = $bankInfoModel->add(['proxy_id' => session('code'), 'name' => $name, 'bank' => $bank, 'cardaccount' => $cardaccount]);
-        } else {
-            $res = $bankInfoModel->updateByWhere(['proxy_id' => session('code')], ['name' => $name, 'bank' => $bank, 'cardaccount' => $cardaccount]);
+        //检查数据合法性
+        foreach ($list as $v) {
+            if ($v['status'] == $status && $status==1) {//重复设置
+                $data['code'] = 3;
+                $data['msg']  = config('msg.handle_withdrawall_111');
+                return json($data);
+            }
+            if ($v['status'] == 2 || $v['status'] == 3) {//已拒绝或已完成
+                $data['code'] = 3;
+                $data['msg']  = config('msg.handle_withdraw_2');
+                return json($data);
+            }
+            if ($v['status'] == 0 && $status == 3) {//未审批的直接设置已完成
+                $data['code'] = 4;
+                $data['msg']  = config('msg.handle_withdraw_3');
+                return json($data);
+            }
+            if ($v['status'] == 1 && $status == 2) {
+                $data['code'] = 5;
+                $data['msg']  = config('msg.handle_withdraw_5');
+                return json($data);
+            }
         }
 
-        if (!$res) {
-            $data['code'] = 3;
-            $data['msg']  = config('msg.update_fail');
+
+        $statusArr     = config('config.checklog_status');
+        $proxyModel = new Proxy();
+
+        //逐条处理
+        Db::startTrans();
+        foreach ($list as $info) {
+            try {
+                $checklogModel->updateById($info['id'], ['status' => $status, 'info' => $statusArr[$status], 'checktime' => date('YmdHis'), 'checkuser' => session('adminname')]);
+                if ($status == 2) {//退款
+                    $proxyModel->updateByWhere(['code' => $info['proxy_id']], ['balance' => Db::raw('balance+' . $info['amount'])]);
+                }
+                save_log('withdraw/handle', "success,status:$status,proxyid:{$info['proxy_id']},checkuser:" . session('adminname'));
+
+            } catch (\Exception $e) {
+                Db::rollback();
+                save_log('withdraw/handle', "fail,msg:{$e->getMessage()}status:$status,proxyid:{$info['proxy_id']},checkuser:" . session('adminname'));
+                $data['code'] = 5;
+                $data['msg']  = config('msg.handle_withdrawall_10');
+                return json($data);
+            }
         }
+        Db::commit();
+        $data['msg']  = config('msg.handle_withdrawall_01');
         return json($data);
     }
 }

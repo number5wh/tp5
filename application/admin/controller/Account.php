@@ -52,7 +52,7 @@ class Account extends Controller
         }
 
         //获取代理列表
-        $proxyList = $proxyModel->getList($where, $page, $limit, 'historyin, percent, id, code as proxy_id, username, descript');
+        $proxyList = $proxyModel->getList($where, $page, $limit, 'historyin, percent, id, code as proxy_id, username, descript, parent_id');
         if ($proxyList) {
             $this->handleProxy($proxyList);
         }

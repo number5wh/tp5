@@ -6,9 +6,9 @@
 namespace app\command;
 
 use apiData\PlayerData;
-use app\index\model\Paytime;
-use app\index\model\Planlog;
-use app\index\model\Thirdpaytime;
+use app\model\Paytime;
+use app\model\Planlog;
+use app\model\Thirdpaytime;
 use think\console\Command;
 use think\console\Input;
 use think\console\Output;
@@ -26,16 +26,16 @@ class GetRechargeInfo extends Command
 
     protected function execute(Input $input, Output $output)
     {
-        $planlogModel = new Planlog();
-        $today        = date('Ymd');
-        $planId       = $planlogModel->add(
-            [
-                'plan'       => 'getRechargeInfo',
-                'day'        => $today,
-                'status'     => 0,
-                'inserttime' => date('Y-m-d H:i:s')
-            ]
-        );
+//        $planlogModel = new Planlog();
+//        $today        = date('Ymd');
+//        $planId       = $planlogModel->add(
+//            [
+//                'plan'       => 'getRechargeInfo',
+//                'day'        => $today,
+//                'status'     => 0,
+//                'inserttime' => date('Y-m-d H:i:s')
+//            ]
+//        );
 
         save_log('apidata/getRechargeInfo', "start at:" . date('Y-m-d H:i:s'));
         if (intval(date('G')) == 0 && intval(date('i')) < 10) {//前10分钟取前一天的
@@ -91,7 +91,7 @@ class GetRechargeInfo extends Command
                 }
             }
         }
-        $planlogModel->updateById($planId, ['updatetime' => date('Y-m-d H:i:s'), 'status' => 1]);
+        //$planlogModel->updateById($planId, ['updatetime' => date('Y-m-d H:i:s'), 'status' => 1]);
         save_log('apidata/getRechargeInfo', "end at:" . date('Y-m-d H:i:s'));
     }
 }

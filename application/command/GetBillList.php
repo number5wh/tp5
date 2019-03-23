@@ -7,12 +7,12 @@
 namespace app\command;
 
 use apiData\PlayerData;
-use app\index\model\Incomelog;
-use app\index\model\Planlog;
-use app\index\model\Playerorder;
-use app\index\model\Proxy;
-use app\index\model\Teamlevel;
-use app\index\model\ThirdPlayerOrder;
+use app\model\Incomelog;
+use app\model\Planlog;
+use app\model\Playerorder;
+use app\model\Proxy;
+use app\model\Teamlevel;
+use app\model\ThirdPlayerOrder;
 use think\console\Command;
 use think\console\Input;
 use think\console\Output;

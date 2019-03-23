@@ -84,6 +84,9 @@
         if(parseFloat(left) < parseFloat(value)){
           return '您当前可提现余额为'+parseFloat(left)+'元';
         }
+        if (parseFloat(value) < 100) {
+          return '提现金额至少为100元';
+        }
       }
     });
 

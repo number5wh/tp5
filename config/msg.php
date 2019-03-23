@@ -22,6 +22,7 @@ return [
     'no_account' => '提现账户不存在',
     'withdraw_0' => '提现申请成功',
     'withdraw_1' => '提现申请失败',
+    'withdraw_2' => '提现金额最少为100元',
 
     'add_proxy_0' => '新增代理账号成功',
     'add_proxy_1' => '当前账号没有新增代理权限',
@@ -38,4 +39,23 @@ return [
     'edit_player_1' => '获取不到玩家信息',
     'edit_player_2' => '备注未做修改',
     'edit_player_3' => '玩家备注更新失败',
+
+
+    'handle_withdraw_1' => '找不到提现记录',
+    'handle_withdraw_2' => '存在已完成处理的提现记录',
+    'handle_withdraw_3' => '未审批的提现记录不能设为已完成',
+    'handle_withdraw_4' => '提现处理失败',
+    'handle_withdraw_0' => '提现处理成功',
+    'handle_withdraw_5' => '审核通过的不能设置为未通过',
+
+    'handle_withdrawall_0' => '提现处理成功',
+    'handle_withdrawall_1' => '选中的数据有误',
+    'handle_withdrawall_11' => '存在部分数据未处理成功',
+    'handle_withdrawall_10' => '提现处理失败',
+    'handle_withdrawall_01' => '提现处理成功',
+    'handle_withdrawall_00' => '提现处理失败',
+    'handle_withdrawall_111' => '存在已经审核通过的数据，不能重复审核',
+
+
+
 ];

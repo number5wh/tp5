@@ -24,8 +24,8 @@ class Test extends Controller
      */
     public function index()
     {
-        $res = PlayerData::getPlayerList('FC0000010');
-        var_dump(url('admin.layout'));
+        $res = PlayerData::getBillList('FC0000004');
+        var_dump($res);
         die;
 
     }

@@ -97,8 +97,6 @@ Route::group('test', function(){
 
 
 //管理员
-
-
 Route::group('admin', function() {
     Route::get('login', 'admin/login/login')->name('admin.login');
     Route::post('doLogin', 'admin/login/doLogin')->name('admin.doLogin');
@@ -114,6 +112,9 @@ Route::group('admin', function() {
 
 
     Route::get('withdraw/getList', 'admin/withdraw/getList')->name('admin.withdraw.list');
+    Route::get('withdraw/getListData', 'admin/withdraw/getListData')->name('admin.withdraw.listData');
+    Route::post('withdraw/doWithdraw', 'admin/withdraw/doWithdraw')->name('admin.withdraw.doWithdraw');
+    Route::post('withdraw/doWithdrawAll', 'admin/withdraw/doWithdrawAll')->name('admin.withdraw.doWithdrawAll');
 
     Route::get('safeset/index', 'admin/safeset/index')->name('admin.safeset.index');
     Route::post('safeset/changePwd', 'admin/safeset/changePwd')->name('admin.safeset.changePwd');
