@@ -1,0 +1,12 @@
+.font1{
+    font-family: 微软雅黑;
+    font-weight: 400;
+    color: white;
+    font-size: 14px;
+}
+.font2{
+    font-family: 微软雅黑 Bold,微软雅黑 Regular,微软雅黑;
+    font-weight: 700;
+    color: white;
+    font-size: 28px;
+}

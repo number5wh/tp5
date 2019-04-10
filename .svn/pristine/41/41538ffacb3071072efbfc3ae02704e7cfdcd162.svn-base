@@ -1,0 +1,61 @@
+{extend name="common/base" /}
+
+{block name="title"}用户列表{/block}
+{block name="content"}
+<div class="layui-card">
+  <div class="layui-card-header layuiadmin-card-header-auto">
+    <h2>用户列表</h2>
+  </div>
+
+  <div class="layui-card-body">
+    <div class="search-proxy" style="margin-bottom: 10px;">
+      <div class="layui-inline">
+        <input type="text" name="username" id="username" placeholder="用户账号" autocomplete="off" class="layui-input">
+      </div>
+      <button class="layui-btn" data-type="reload" id="search_proxy">搜索</button>
+    </div>
+    <table id="proxylist" lay-filter="proxylist"></table>
+  </div>
+</div>
+
+{/block}
+
+{block name="script"}
+<script>
+  layui.use(['layer','table','form','jquery'],function () {
+    var layer = layui.layer
+            , form = layui.form
+            , table = layui.table
+            , $ = layui.$;
+    //用户表格初始化
+    var dataTable = table.render({
+      elem: '#proxylist'
+      , height: 500
+      , url: "{:url('admin.user.listData')}" //数据接口
+      , where: {}
+      , page: true //开启分页
+      , cols: [[ //表头
+         {field: 'username', title: '账号'}
+        , {field: 'role', title: '角色'}
+            , {field: 'createtime', title: '创建时间'}
+      ]]
+    });
+
+    //搜索代理
+    var search = function() {
+      var username = $.trim($('#username').val());
+      //执行重载
+      table.reload('proxylist', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        },
+        where: {'username':username}
+      });
+    };
+    $('#search_proxy').on('click', function() {
+      search();
+    });
+  });
+</script>
+{/block}
+
