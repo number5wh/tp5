@@ -28,7 +28,11 @@ class Login extends Controller
 
     public function doLogin()
     {
+<<<<<<< HEAD
         $result = $this->validate($this->request->post(), 'app\admin\validate\Login');
+=======
+        $result = $this->validate($this->request->post(), 'app\index\validate\Login');
+>>>>>>> 1dff491581b7be4d5812ca9c1a94740b7002bb0e
         $data = [
             'code' => 0,
             'msg'  => '',

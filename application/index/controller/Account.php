@@ -142,7 +142,10 @@ class Account extends Controller
         $username       = isset($this->request->username) ? strval($this->request->username) : '';
         $page           = (isset($this->request->page) && intval($this->request->page) > 0) ? intval($this->request->page) : 1;
         $limit          = (isset($this->request->limit) && intval($this->request->limit) > 0) ? intval($this->request->limit) : 10;
+<<<<<<< HEAD
         //$limit=1;
+=======
+>>>>>>> 1dff491581b7be4d5812ca9c1a94740b7002bb0e
         $teamlevelModel = new Teamlevel();
         $where          = [
             ['parent_id', '=', session('code')],

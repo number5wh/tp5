@@ -10,7 +10,10 @@ class Login extends Controller
 {
     public function verify()
     {
+<<<<<<< HEAD
         ob_clean();
+=======
+>>>>>>> 1dff491581b7be4d5812ca9c1a94740b7002bb0e
         $captcha = new Captcha(['length' => 4,'useNoise'=>false]);
         return $captcha->entry();
     }

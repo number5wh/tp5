@@ -132,7 +132,11 @@ if (!function_exists('save_log')) {
 if (!function_exists('get_proxy_code')) {
     function get_proxy_code()
     {
+<<<<<<< HEAD
         $id = intval(\app\model\Proxy::max('id')) + 1;
+=======
+        $id = intval(\app\index\model\Proxy::max('id')) + 1;
+>>>>>>> 1dff491581b7be4d5812ca9c1a94740b7002bb0e
         $ret = 'FC';
         if ($id < 10) {
             $ret .= '000000'.$id;
