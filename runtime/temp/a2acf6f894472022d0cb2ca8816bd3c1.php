@@ -1,7 +1,22 @@
-{extend name="common/base" /}
+<?php /*a:2:{s:80:"C:\Users\Administrator\Desktop\tp5\application\admin\view\account\proxyList.html";i:1554870932;s:74:"C:\Users\Administrator\Desktop\tp5\application\admin\view\common\base.html";i:1554870932;}*/ ?>
 
-{block name="title"}代理列表{/block}
-{block name="content"}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>代理列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/src/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/src/layuiadmin/style/admin.css" media="all">
+    
+</head>
+<body>
+
+<div class="layui-fluid">
+    
 <div class="layui-card">
   <div class="layui-card-header layuiadmin-card-header-auto">
     <h2>代理列表</h2>
@@ -71,9 +86,11 @@
 </div>
 
 
-{/block}
 
-{block name="script"}
+</div>
+
+<script src="/src/layuiadmin/layui/layui.js?t=1"></script>
+
 <script type="text/html" id="proxylist-bar">
   <button class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i><cite></cite></button>
 </script>
@@ -87,19 +104,19 @@
     var dataTable = table.render({
       elem: '#proxylist'
       , height: 500
-      , url: "{:url('account.proxyListData')}" //数据接口
+      , url: "<?php echo url('admin.account.proxyListData'); ?>" //数据接口
       , where: {}
-      , page: true //开启分页,
-      , limit:10
+      , page: true //开启分页
       , cols: [[ //表头
-         {field: 'code', title: '代理ID', sort:true, width:110}
+         {field: 'proxy_id', title: '代理ID', sort:true}
+        , {field: 'parent_id', title: '上级代理ID'}
         , {field: 'username', title: '账号'}
-        , {field: 'percent', title: '分成比例', width:100}
-        , {field: 'totalfee', title: '总充值'}
-        , {field: 'total_tax', title: '总业绩'}
-        , {field: 'historyin', title: '总利润'}
-        , {field: 'leftmoney', title: '玩家余额'}
-        , {field: 'descript', title: '备注', width:250}
+        , {field: 'percent', title: '分成比例', sort:true}
+        , {field: 'totalfee', title: '总充值', sort:true}
+        , {field: 'total_tax', title: '总业绩', sort:true}
+        , {field: 'historyin', title: '总利润', sort:true}
+        , {field: 'leftmoney', title: '玩家余额', sort:true}
+        , {field: 'descript', title: '备注'}
         , {fixed: 'right', title:'操作', align:'center', toolbar: '#proxylist-bar'}
       ]]
     });
@@ -129,9 +146,9 @@
           $('#edit_pwd_conf').val('');
           $.ajax({
               type: 'post',
-              url: "{:url('account.edit')}",
+              url: "<?php echo url('admin.account.edit'); ?>",
               data: {
-                  'proxyid': $.trim(data.code),
+                  'proxyid': $.trim(data.proxy_id),
               },
               dataType: 'json',
               success: function (res) {
@@ -187,7 +204,7 @@
       form.on('submit(account-edit)', function(data) {
           $.ajax({
               type: 'post',
-              url: "{:url('account.doEdit')}",
+              url: "<?php echo url('admin.account.doEdit'); ?>",
               data: {
                   'username': $.trim(data.field.username),
                   'password': $.trim(data.field.password),
@@ -213,5 +230,7 @@
       });
   });
 </script>
-{/block}
+
+</body>
+</html>
 

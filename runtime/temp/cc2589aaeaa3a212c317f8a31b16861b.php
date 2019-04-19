@@ -1,10 +1,11 @@
+<?php /*a:1:{s:69:"C:\Users\Administrator\Desktop\tp5\application\admin\view\layout.html";i:1554870932;}*/ ?>
 
 
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>联运管理系统</title>
+  <title>联运代理后台</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -28,32 +29,16 @@
               <i class="layui-icon layui-icon-refresh-3"></i>
             </a>
           </li>
-          <li class="layui-nav-item" lay-unselect data-name="template-index">
-            <a href="javascript:;" title="分享" lay-href="{:url('template.index')}">
-              <i class="layui-icon layui-icon-share"></i><cite>&nbsp;推广分享</cite>
-            </a>
-          </li>
         </ul>
         <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
           <li class="layui-nav-item" lay-unselect>
             <a href="javascript:;">
-              <cite id="username">{$proxyid}</cite>
+              <cite id="username"><?php echo htmlentities($username); ?></cite>
             </a>
             <dl class="layui-nav-child">
-              <!--<dd><a lay-href="set/user/info.html">基本资料</a></dd>-->
-              <!--<dd><a lay-href="set/user/password.html">修改密码</a></dd>-->
-              <!--<hr>-->
-              <dd style="text-align: center;"><a href="{:url('logout')}">退出</a></dd>
+              <dd style="text-align: center;"><a href="<?php echo url('admin.logout'); ?>">退出</a></dd>
             </dl>
           </li>
-          <!--<li class="layui-nav-item" lay-unselect>-->
-            <!--<a lay-href="app/message/index.html" layadmin-event="message" lay-text="消息中心">-->
-              <!--<i class="layui-icon layui-icon-notice"></i>  -->
-              <!---->
-              <!--&lt;!&ndash; 如果有新消息，则显示小圆点 &ndash;&gt;-->
-              <!--<span class="layui-badge-dot"></span>-->
-            <!--</a>-->
-          <!--</li>-->
           <li class="layui-nav-item layui-hide-xs" lay-unselect>
             <a href="javascript:;" layadmin-event="theme">
               <i class="layui-icon layui-icon-theme"></i>
@@ -71,74 +56,64 @@
       <!-- 侧边菜单 -->
       <div class="layui-side layui-side-menu">
         <div class="layui-side-scroll">
-          <div class="layui-logo" lay-href="{:url('home')}">
-            <span>联运管理系统</span>
+          <div class="layui-logo" lay-href="<?php echo url('admin.account.proxyList'); ?>">
+            <span>联运代理后台</span>
           </div>
           
           <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
-            <li data-name="home" class="layui-nav-item layui-nav-itemed">
-              <a href="javascript:;" lay-href="{:url('home')}" lay-tips="主页" lay-direction="2">
-                <i class="layui-icon layui-icon-home"></i>
-                <cite>主页</cite>
-              </a>
-            </li>
+            <?php if(($roleid == 1)): ?>
             <li data-name="account" class="layui-nav-item">
               <a href="javascript:;" lay-tips="账号管理" lay-direction="2">
-                <i class="layui-icon layui-icon-template-1"></i>
+                <i class="layui-icon layui-icon-list"></i>
                 <cite>账号管理</cite>
               </a>
               <dl class="layui-nav-child">
-
                 <dd>
-                  <a lay-href="{:url('account.proxyList')}">代理列表</a>
+                  <a lay-href="<?php echo url('admin.account.proxyList'); ?>">代理列表</a>
                 </dd>
-                <dd data-name="workorder">
-                  <a lay-href="{:url('account.playerList')}">玩家列表</a>
-                </dd>
-                {if $addproxy == 1}
-                <dd>
-                  <a lay-href="{:url('account.addProxy')}">新增代理</a>
-                </dd>
-                {/if}
               </dl>
             </li>
-            <li data-name="detail" class="layui-nav-item">
-              <a href="javascript:;" lay-tips="明细查询" lay-direction="2">
-                <i class="layui-icon layui-icon-app"></i>
-                <cite>明细查询</cite>
-              </a>
-              <dl class="layui-nav-child">
-                <dd><a lay-href="{:url('detail.index')}">玩家游戏明细</a></dd>
-              </dl>
-            </li>
+            <?php endif; ?>
 
             <li data-name="withdraw" class="layui-nav-item">
               <a href="javascript:;" lay-tips="提现管理" lay-direction="2">
-                <i class="layui-icon layui-icon-rmb"></i>
+                <i class="layui-icon layui-icon-list"></i>
                 <cite>提现管理</cite>
               </a>
               <dl class="layui-nav-child">
                 <dd data-name="withdraw-list">
-                  <a lay-href="{:url('withdraw.list')}">提现记录</a>
-                </dd>
-                <dd data-name="withdraw-account">
-                  <a lay-href="{:url('withdraw.set')}">结算账号</a>
-                </dd>
-
-                <dd data-name="withdraw-get">
-                  <a lay-href="{:url('withdraw.apply')}">提现申请</a>
+                  <a lay-href="<?php echo url('admin.withdraw.list'); ?>">提现处理</a>
                 </dd>
 
               </dl>
             </li>
+
+            <li data-name="user" class="layui-nav-item">
+              <a href="javascript:;" lay-tips="用户管理" lay-direction="2">
+                <i class="layui-icon layui-icon-list"></i>
+                <cite>用户管理</cite>
+              </a>
+              <dl class="layui-nav-child">
+                <dd data-name="user-list">
+                  <a lay-href="<?php echo url('admin.user.list'); ?>">用户列表</a>
+                </dd>
+                <?php if(($roleid == 1)): ?>
+                <dd data-name="user-list">
+                  <a lay-href="<?php echo url('admin.user.add'); ?>">新增用户</a>
+                </dd>
+                <?php endif; ?>
+
+              </dl>
+            </li>
+
             <li data-name="set" class="layui-nav-item">
               <a href="javascript:;" lay-tips="安全设置" lay-direction="2">
-                <i class="layui-icon layui-icon-set"></i>
+                <i class="layui-icon layui-icon-list"></i>
                 <cite>安全设置</cite>
               </a>
               <dl class="layui-nav-child">
                 <dd>
-                  <a lay-href="{:url('safeset.index')}">安全设置</a>
+                  <a lay-href="<?php echo url('admin.safeset.index'); ?>">安全设置</a>
                 </dd>
               </dl>
             </li>
@@ -164,7 +139,7 @@
         </div>
         <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
           <ul class="layui-tab-title" id="LAY_app_tabsheader">
-            <li lay-id="{:url('home')}" lay-attr="{:url('home')}" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+            <li lay-id="<?php echo url('admin.account.proxyList'); ?>" lay-attr="<?php echo url('admin.account.proxyList'); ?>" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
           </ul>
         </div>
       </div>
@@ -173,7 +148,7 @@
       <!-- 主体内容 -->
       <div class="layui-body" id="LAY_app_body">
         <div class="layadmin-tabsbody-item layui-show">
-          <iframe src="{:url('home')}" frameborder="0" class="layadmin-iframe"></iframe>
+          <iframe src="<?php echo url('admin.account.proxyList'); ?>" frameborder="0" class="layadmin-iframe"></iframe>
         </div>
       </div>
       

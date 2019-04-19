@@ -1,7 +1,22 @@
-{extend name="common/base" /}
+<?php /*a:2:{s:80:"C:\Users\Administrator\Desktop\tp5\application\index\view\account\proxyList.html";i:1555582833;s:74:"C:\Users\Administrator\Desktop\tp5\application\index\view\common\base.html";i:1554870932;}*/ ?>
 
-{block name="title"}代理列表{/block}
-{block name="content"}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>代理列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/src/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/src/layuiadmin/style/admin.css" media="all">
+    
+</head>
+<body>
+
+<div class="layui-fluid">
+    
 <div class="layui-card">
   <div class="layui-card-header layuiadmin-card-header-auto">
     <h2>代理列表</h2>
@@ -71,9 +86,11 @@
 </div>
 
 
-{/block}
 
-{block name="script"}
+</div>
+
+<script src="/src/layuiadmin/layui/layui.js?t=1"></script>
+
 <script type="text/html" id="proxylist-bar">
   <button class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i><cite></cite></button>
 </script>
@@ -87,7 +104,7 @@
     var dataTable = table.render({
       elem: '#proxylist'
       , height: 500
-      , url: "{:url('account.proxyListData')}" //数据接口
+      , url: "<?php echo url('account.proxyListData'); ?>" //数据接口
       , where: {}
       , page: true //开启分页,
       , limit:10
@@ -129,7 +146,7 @@
           $('#edit_pwd_conf').val('');
           $.ajax({
               type: 'post',
-              url: "{:url('account.edit')}",
+              url: "<?php echo url('account.edit'); ?>",
               data: {
                   'proxyid': $.trim(data.code),
               },
@@ -187,7 +204,7 @@
       form.on('submit(account-edit)', function(data) {
           $.ajax({
               type: 'post',
-              url: "{:url('account.doEdit')}",
+              url: "<?php echo url('account.doEdit'); ?>",
               data: {
                   'username': $.trim(data.field.username),
                   'password': $.trim(data.field.password),
@@ -213,5 +230,7 @@
       });
   });
 </script>
-{/block}
+
+</body>
+</html>
 

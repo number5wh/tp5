@@ -1,12 +1,24 @@
-{extend name="common/base" /}
+<?php /*a:2:{s:73:"C:\Users\Administrator\Desktop\tp5\application\index\view\index\home.html";i:1555574182;s:74:"C:\Users\Administrator\Desktop\tp5\application\index\view\common\base.html";i:1554870932;}*/ ?>
 
-{block name="title"}主页{/block}
 
-{block name="css"}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>主页</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/src/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/src/layuiadmin/style/admin.css" media="all">
+    
 <link rel="stylesheet" href="/static/css/index/home.css" media="all">
-{/block}
 
-{block name="content"}
+</head>
+<body>
+
+<div class="layui-fluid">
+    
 <div class="layui-row layui-col-space30">
     <div class="layui-col-md3 layui-col-lg3 layui-col-xs12 layui-col-sm6 ">
         <div class="layui-card">
@@ -130,9 +142,11 @@
 
 
 </div>
-{/block}
 
-{block name="script"}
+</div>
+
+<script src="/src/layuiadmin/layui/layui.js?t=1"></script>
+
 <script>
     layui.config({
         base: '/src/layuiadmin/' //静态资源所在路径
@@ -141,5 +155,7 @@
         ,home: '../mymod/home'
     }).use(['index', 'home']);
 </script>
-{/block}
+
+</body>
+</html>
 
