@@ -89,29 +89,17 @@
       , height: 500
       , url: "{:url('account.proxyListData')}" //数据接口
       , where: {}
-<<<<<<< HEAD
       , page: true //开启分页,
       , limit:10
       , cols: [[ //表头
          {field: 'code', title: '代理ID', sort:true, width:110}
         , {field: 'username', title: '账号'}
         , {field: 'percent', title: '分成比例', width:100}
-=======
-      , page: true //开启分页
-      , cols: [[ //表头
-         {field: 'code', title: '代理ID', sort:true}
-        , {field: 'username', title: '账号'}
-        , {field: 'percent', title: '分成比例'}
->>>>>>> 1dff491581b7be4d5812ca9c1a94740b7002bb0e
         , {field: 'totalfee', title: '总充值'}
         , {field: 'total_tax', title: '总业绩'}
         , {field: 'historyin', title: '总利润'}
         , {field: 'leftmoney', title: '玩家余额'}
-<<<<<<< HEAD
         , {field: 'descript', title: '备注', width:250}
-=======
-        , {field: 'descript', title: '备注'}
->>>>>>> 1dff491581b7be4d5812ca9c1a94740b7002bb0e
         , {fixed: 'right', title:'操作', align:'center', toolbar: '#proxylist-bar'}
       ]]
     });
@@ -193,6 +181,7 @@
           $('#edit_pwd_conf').val('');
           $('#edit_descript').val('');
       });
+
 
       //更新代理
       form.on('submit(account-edit)', function(data) {
