@@ -1,4 +1,4 @@
-<?php /*a:2:{s:76:"C:\Users\Administrator\Desktop\tp5\application\index\view\safeset\index.html";i:1554870932;s:74:"C:\Users\Administrator\Desktop\tp5\application\index\view\common\base.html";i:1554870932;}*/ ?>
+<?php /*a:2:{s:76:"C:\Users\Administrator\Desktop\tp5\application\index\view\safeset\index.html";i:1555653769;s:74:"C:\Users\Administrator\Desktop\tp5\application\index\view\common\base.html";i:1554870932;}*/ ?>
 
 
 <!DOCTYPE html>
